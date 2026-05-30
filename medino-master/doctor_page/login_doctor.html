@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Login</title>
+    
+
+    <style>
+        /* 🔥 Background */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+}
+
+/* 🔙 Back Button */
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Container */
+.login-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* 🔷 Login Box */
+.login-box {
+    width: 360px;
+    background: #fff;
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+
+    animation: fadeIn 0.6s ease;
+}
+
+/* Icon */
+.icon {
+    width: 70px;
+    height: 70px;
+    margin: auto;
+    margin-bottom: 15px;
+
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 50%;
+    font-size: 30px;
+}
+
+/* Title */
+.login-box h2 {
+    margin-bottom: 5px;
+}
+
+/* Sub */
+.login-box p {
+    color: #777;
+    margin-bottom: 20px;
+}
+
+/* Inputs */
+.login-box input {
+    width: 92%;
+    padding: 12px;
+    margin: 10px 0;
+
+    border-radius: 10px;
+    border: 1px solid #ccc;
+
+    outline: none;
+    transition: 0.3s;
+}
+
+/* Focus */
+.login-box input:focus {
+    border-color: #0072ff;
+    box-shadow: 0 0 8px rgba(0,114,255,0.3);
+}
+
+/* Button */
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+
+    font-size: 16px;
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+/* Hover */
+.login-box button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+    .login-box {
+        width: 90%;
+        padding: 30px 20px;
+    }
+}
+    </style>
+</head>
+
+<body>
+
+<!-- 🔹 Back Button -->
+<button class="back-btn" onclick="goBack()">← Back</button>
+
+<!-- 🔹 Login Container -->
+<div class="login-container">
+
+    <div class="login-box">
+
+        <!-- Icon -->
+        <div class="icon">
+            👨‍⚕️
+        </div>
+
+        <h2 data-lang="doctor_title">Doctor Login</h2>
+        <p data-lang="doctor_sub">Access your medical dashboard</p>
+
+        <form onsubmit="doctorLogin(event)">
+
+            <input type="text" id="doctorPhone" placeholder="Phone" data-lang-placeholder="doc_id" required>
+
+            <input type="password" id="doctorPass" placeholder="Password" data-lang-placeholder="password" required>
+
+            <button type="submit" data-lang="login">Login</button>
+
+            <p id="msg"></p>
+
+        </form>
+
+    </div>
+
+</div>
+<script>
+
+// =========================
+// 🔥 GO BACK
+// =========================
+function goBack(){
+
+    window.location.href =
+        "../Login_page.html";
+}
+
+
+// =========================
+// 🔥 LOGIN
+// =========================
+function doctorLogin(e){
+
+    e.preventDefault();
+
+    const phone =
+        document.getElementById(
+            "doctorPhone"
+        ).value.trim();
+
+    const password =
+        document.getElementById(
+            "doctorPass"
+        ).value.trim();
+
+    const msg =
+        document.getElementById(
+            "msg"
+        );
+
+    // =========================
+    // 🔴 VALIDATION
+    // =========================
+    if(
+        !phone
+        ||
+        !password
+    ){
+
+        msg.style.color =
+            "red";
+
+        msg.innerText =
+            "Enter phone & password";
+
+        return;
+    }
+
+    // =========================
+// 🔥 SEND OTP REQUEST
+// =========================
+fetch(
+    "../doctor_page/send_doctor_otp.php",
+    {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type":"application/json"
+        },
+
+        body: JSON.stringify({
+
+            phone,
+            password
+        })
+    }
+)
+
+.then(res => res.json())
+
+.then(data => {
+
+    console.log(
+        "OTP RESPONSE:",
+        data
+    );
+
+    // =========================
+    // ✅ SUCCESS
+    // =========================
+    if(data.status === "success"){
+
+        // SAVE TEMP DOCTOR ID
+        sessionStorage.setItem(
+            "otp_doctor_id",
+            data.doctor_id
+        );
+
+        msg.style.color =
+            "#22c55e";
+
+        msg.innerText =
+            "OTP sent to your email";
+
+        // REDIRECT
+        setTimeout(()=>{
+
+            window.location.href =
+                "verify_doctor_otp.html";
+
+        },800);
+
+    }else{
+
+        // ERROR
+        msg.style.color =
+            "red";
+
+        msg.innerText =
+            data.message;
+    }
+
+})
+
+.catch((err)=>{
+
+    console.log(
+        "OTP ERROR:",
+        err
+    );
+
+    msg.style.color =
+        "red";
+
+    msg.innerText =
+        "Server Error";
+});
+}
+
+</script>
+
+</body>
+</html>

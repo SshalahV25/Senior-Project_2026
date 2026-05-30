@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin</h2>
+        <ul>
+            <li onclick="go('dashboard.html')">🏠 Dashboard</li>
+            <li onclick="go('specialty.html')">🧾 Specialty</li>
+            <li onclick="go('doctors.html')">👨‍⚕️ Doctors</li>
+            <li onclick="go('patients.html')">🧑 Patients</li>
+            <li onclick="go('booking.html')">📅 Booking</li>
+            <li onclick="go('manage_accounts.html')">⚙️ Accounts</li>
+            <li onclick="go('reports.html')">📊 Reports</li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+        <!-- Navbar -->
+        <div class="navbar">
+            <h3>Dashboard</h3>
+            <button onclick="logout()">Logout</button>
+        </div>
+
+        <!-- Cards -->
+        <div class="cards">
+
+            <div class="card" onclick="go('specialty.html')">
+                <h3>Specialty</h3>
+                <p>Manage Specialty</p>
+            </div>
+
+            <div class="card" onclick="go('doctors.html')">
+                <h3>Doctors</h3>
+                <p>Manage Doctors</p>
+            </div>
+            
+
+            <div class="card" onclick="go('patients.html')">
+                <h3>Patients</h3>
+                <p>Manage Patients</p>
+            </div>
+
+            <div class="card" onclick="go('manage_accounts.html')">
+                <h3>Manage_accounts</h3>
+                <p>Manage Accounts</p>
+            </div>
+
+            <div class="card" onclick="go('booking.html')">
+                <h3>Booking</h3>
+                <p>Manage Booking</p>
+            </div>
+
+            <div class="card" onclick="go('reports.html')">
+                <h3>Reports</h3>
+                <p>View Reports</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    /* =========================
+   GENERAL
+========================= */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #f4f6f9;
+}
+
+.dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+.sidebar {
+    width: 220px;
+    background: #2c3e50;
+    color: #fff;
+    padding: 20px 10px;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: 0.3s;
+}
+
+.sidebar ul li:hover {
+    background: #1abc9c;
+}
+
+.sidebar ul li.active {
+    background: #1abc9c;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.navbar h3 {
+    margin: 0;
+}
+
+.navbar button {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.navbar button:hover {
+    background: #c0392b;
+}
+
+
+/* =========================
+   CARDS GRID
+========================= */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+
+/* =========================
+   CARD DESIGN
+========================= */
+.card {
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px);
+
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+
+    cursor: pointer;
+    transition: 0.3s ease;
+
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+/* Hover Effect 🔥 */
+.card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    background: #ffffff;
+}
+
+
+/* =========================
+   CARD TEXT
+========================= */
+.card h3 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.card p {
+    color: #7f8c8d;
+}
+
+
+/* =========================
+   COLOR VARIANTS (🔥 حلوة جدًا)
+========================= */
+.card:nth-child(1) { border-left: 5px solid #9b59b6; }
+.card:nth-child(2) { border-left: 5px solid #3498db; }
+.card:nth-child(3) { border-left: 5px solid #2ecc71; }
+.card:nth-child(4) { border-left: 5px solid #f1c40f; }
+.card:nth-child(5) { border-left: 5px solid #e67e22; }
+.card:nth-child(6) { border-left: 5px solid #e74c3c; }
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .main {
+        padding: 10px;
+    }
+}
+</style>
+
+<script src="./js/main.js"></script>
+</body>
+</html>

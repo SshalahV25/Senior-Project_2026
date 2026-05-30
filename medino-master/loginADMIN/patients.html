@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patients</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin</h2>
+        <ul>
+            <li onclick="go('dashboard.html')">🏠 Dashboard</li>
+            <li onclick="go('specialty.html')">🧾 Specialty</li>
+            <li onclick="go('doctors.html')" >👨‍⚕️ Doctors</li>
+            <li class="active" >🧑 Patients</li>
+            <li onclick="go('booking.html')">📅 Booking</li>
+            <li onclick="go('manage_accounts.html')">⚙️ Accounts</li>
+            <li onclick="go('reports.html')">📊 Reports</li>
+        </ul>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <!-- Navbar -->
+        <div class="navbar">
+            <h3>Manage Patients</h3>
+
+            <!-- 🔥 الرسائل -->
+            <div id="msgBox"></div>
+
+            <button onclick="logout()">Logout</button>
+        </div>
+        <div id="confirmBox" class="confirm-box">
+            <div class="confirm-content">
+                <p id="confirmText"></p>
+                <div class="confirm-buttons">
+                    <button onclick="confirmYes()">Yes</button>
+                    <button onclick="confirmNo()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <!-- مكان الرسائل -->
+            <div id="messageBox"></div>
+        <!-- Content -->
+        <div class="content">
+
+        <!-- Edit Patients -->
+        <div class="form-box">
+            <input type="hidden" id="patient_id">
+
+            <input type="text" id="name" placeholder="Patients Name">
+            <input type="email" id="email" placeholder="Email">
+            <input type="text" id="phone" placeholder="Phone">
+            <input type="date" id="Birth_date" placeholder="Birth_date">
+
+
+            <button id="saveBtn" onclick="savePatient()">Edit Patients</button>
+        </div>
+
+                <!-- Search -->
+                <input type="text" id="search" placeholder="Search..." onkeyup="searchPatient()">
+
+            <!-- Table -->
+            <div class="table-box">
+                <h3>Patients List</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Age</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="PatientsTable"></tbody>
+            </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================================= -->
+<!-- 🔥 PATIENT HISTORY MODAL -->
+<!-- ================================= -->
+
+<div
+    id="historyModal"
+    class="history-modal"
+>
+
+    <div class="history-box">
+
+        <!-- HEADER -->
+        <div class="history-header">
+
+            <h2>
+                Patient History
+            </h2>
+
+            <button
+                class="close-history"
+                onclick="closePatientHistory()"
+            >
+                ✖
+            </button>
+
+        </div>
+
+        <!-- CONTENT -->
+        <div
+            id="historyContent"
+            class="history-content"
+        >
+
+            <div class="loading">
+                Loading...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    /* ===== FORM ===== */
+.form-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.form-box input {
+    flex: 1;
+    min-width: 160px;
+
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-box input:focus {
+    border-color: #1abc9c;
+    box-shadow: 0 0 5px rgba(26,188,156,0.3);
+}
+
+/* زرار */
+.form-box button {
+    padding: 10px 18px;
+    background: #1abc9c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.form-box button:hover {
+    background: #16a085;
+}
+
+#search {
+    width: 250px;
+    padding: 10px;
+    margin: 10px 0 15px 0;
+
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    outline: none;
+}
+
+#search:focus {
+    border-color: #1abc9c;
+}
+
+.table-box {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+
+    height: calc(100vh - 250px); /* 👈 مهم */
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+table th {
+    background: #f9f9f9;
+}
+
+table thead th {
+    position: sticky;
+    top: 0;
+    background: #f9f9f9;
+    z-index: 2;
+}
+
+table td button {
+    padding: 5px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 2px;
+}
+
+/* Edit */
+table td button:first-child {
+    background: #3498db;
+    color: #fff;
+}
+
+/* Delete */
+table td button:last-child {
+    background: #e74c3c;
+    color: #fff;
+}
+
+table td button:hover {
+    opacity: 0.8;
+}
+
+#saveBtn.edit-mode {
+    background: #f39c12;
+}
+
+/* عرض بينات المرضي القديمه  */
+.history-btn{
+
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-left:6px;
+    font-size:13px;
+    transition:.3s;
+}
+
+.history-btn:hover{
+
+    background:#1d4ed8;
+}
+
+/* ================================= */
+/* 🔥 HISTORY MODAL */
+/* ================================= */
+
+.history-modal{
+
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+
+    display:none;
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+}
+
+.history-modal.active{
+
+    display:flex;
+}
+
+.history-box{
+
+    width:90%;
+    max-width:950px;
+    max-height:90vh;
+
+    overflow-y:auto;
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:25px;
+
+    animation:popup .25s ease;
+}
+
+@keyframes popup{
+
+    from{
+        transform:scale(.9);
+        opacity:0;
+    }
+
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+.history-header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:25px;
+}
+
+.history-header h2{
+
+    color:#1e3a8a;
+    font-size:28px;
+}
+
+.close-history{
+
+    width:45px;
+    height:45px;
+
+    border:none;
+    border-radius:50%;
+
+    background:#ef4444;
+    color:#fff;
+
+    cursor:pointer;
+
+    font-size:18px;
+}
+
+.history-content{
+
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+/* ================================= */
+/* 🔥 CARD */
+/* ================================= */
+
+.history-card{
+
+    background:#f8fafc;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:22px;
+
+    padding:35px;
+
+    margin-bottom:25px;
+}
+
+.history-top{
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+
+}
+
+.history-doctor{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#1e3a8a;
+}
+
+.history-date{
+
+    background:#dbeafe;
+
+    color:#1e3a8a;
+
+    padding:10px 18px;
+
+    border-radius:999px;
+
+    font-size:13px;
+
+    font-weight:700;
+}
+
+.history-section{
+
+    margin-top:20px;
+}
+
+.history-label{
+
+    font-weight:700;
+
+    margin-bottom:10px;
+
+    color:#374151;
+}
+
+.history-text{
+
+    color:#4b5563;
+
+    line-height:1.8;
+}
+
+.history-file{
+
+    margin-top:25px;
+
+    display:flex;
+
+    gap:14px;
+}
+
+.history-file a{
+
+    text-decoration:none;
+
+    padding:12px 22px;
+
+    border-radius:14px;
+
+    font-weight:600;
+
+    transition:.3s;
+}
+
+.history-file a:first-child{
+
+    background:#0ea5e9;
+
+    color:#fff;
+}
+
+.history-file a:last-child{
+
+    background:#f1f5f9;
+
+    color:#111827;
+}
+
+.history-badges{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    flex-wrap: nowrap;
+
+}
+
+.status-completed,
+.status-canceled{
+
+    padding: 10px 18px;
+
+    border-radius: 30px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: white;
+
+}
+
+.status-completed{
+
+    background: #2f80ed;
+}
+
+.status-canceled{
+
+    background: #eb5757;
+}
+</style>
+
+<script src="./js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,3701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+
+
+<title>Doctor Dashboard</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+/* ===== GLOBAL ===== */
+body{
+    margin:0;
+    font-family:Arial;
+    display:flex;
+    background:#f5f7fb;
+    height:100vh;
+    overflow:hidden;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+    width:250px;
+    height:100vh;
+    background: linear-gradient(180deg,#1e3a8a,#0ea5e9);
+    color:#fff;
+    padding:15px; /* - قللنا البادينج */
+    
+    display:flex;
+    flex-direction:column;
+}
+
+.menu{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    margin-left: -28px
+}
+
+.logo{
+    margin-bottom:30px;
+}
+
+.menu li{
+    list-style:none;
+    padding:12px;
+    cursor:pointer;
+    border-radius:8px;
+    margin-bottom:10px;
+    display:flex;
+    gap:10px;
+}
+
+.menu li:hover,.active{
+    background:rgba(255,255,255,0.2);
+}
+
+.logout{
+    background:#ff4d4d;
+    margin-top:auto; /* - ينزل تحت خالص */
+}
+
+/* ===== MAIN ===== */
+.main{
+    flex:1;
+    height:100vh;
+    overflow:hidden;
+
+    display:flex;
+    flex-direction:column;
+}
+
+/* NAVBAR */
+.navbar{
+    background: linear-gradient(90deg,#1e3a8a,#0ea5e9);
+    color:#fff;
+    padding:15px 20px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.nav-right img{
+    width:35px;
+    border-radius:50%;
+}
+
+/* ===== CONTENT ===== */
+.content{
+    padding:20px;
+    flex:1;
+
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+.content::-webkit-scrollbar{
+    width:8px;
+}
+
+.content::-webkit-scrollbar-thumb{
+    background:#cbd5e1;
+    border-radius:20px;
+}
+
+.card{
+    background:#fff;
+    padding:25px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.card h2{
+    margin-bottom:20px;
+}
+
+/* ===== TABLE ===== */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:10px;
+    text-align:left;
+}
+
+th{
+    background:#eee;
+}
+
+.status{
+    padding:5px 10px;
+    border-radius:10px;
+    color:#fff;
+    font-size:12px;
+}
+
+.present{background:green;}
+.absent{background:red;}
+.pending{background:orange;}
+.confirmed{background:#22c55e;}
+
+/* ===== BUTTONS ===== */
+button{
+    padding:6px 12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.btn-yes{background:green;color:#fff;}
+.btn-no{background:red;color:#fff;}
+.btn-send{
+    width:120px;
+    padding:10px;
+    background:linear-gradient(90deg,#1e3a8a,#0ea5e9);
+    color:#fff;
+}
+.btn-save{background:#1e3a8a;color:#fff;}
+.btn-show{
+    background:linear-gradient(90deg,#1e3a8a,#0ea5e9);
+    color:#fff;
+    padding:10px 20px;
+}
+
+/* ===== SECTIONS ===== */
+.section{
+    display:none;
+}
+
+.section.active{
+    display:block;
+    animation:fadeIn 0.3s ease;
+    height:100%;
+}
+
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+/* ===== REPORT ===== */
+.report-filters{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.input-box{
+    display:flex;
+    flex-direction:column;
+}
+
+.input-box input{
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #ddd;
+}
+
+.stat-box{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+    background:#f1f5ff;
+    padding:10px;
+    border-radius:10px;
+}
+
+/* ===== MESSAGE ===== */
+.message-form{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.message-form input,
+.message-form textarea{
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #ddd;
+}
+
+/* - Profile Grid */
+.profile-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    margin-bottom:20px;
+}
+
+/* - Input Group */
+.input-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.input-group label{
+    font-size:13px;
+    margin-bottom:5px;
+    color:#555;
+}
+
+.input-group input{
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    outline:none;
+    transition:0.3s;
+}
+
+/* Focus */
+.input-group input:focus{
+    border-color:#0ea5e9;
+    box-shadow:0 0 6px rgba(14,165,233,0.3);
+}
+
+/* - Buttons */
+.btn-save{
+    background:linear-gradient(90deg,#1e3a8a,#0ea5e9);
+    color:#fff;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn-save:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* - Password Section */
+.password-box{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    margin-bottom:15px;
+}
+
+.password-box input{
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    outline:none;
+    transition:0.3s;
+}
+
+/* - Password Button */
+.btn-password{
+    background:#1e3a8a;
+    color:#fff;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn-password:hover{
+    background:#0ea5e9;
+}
+
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+    .sidebar{
+        display:none;
+    }
+}
+
+
+/* =========================
+   - PRESCRIPTION POPUP
+========================= */
+
+.popup-overlay{
+
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,0.5);
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+}
+
+.popup-box{
+
+    width:500px;
+    max-width:95%;
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:25px;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:15px;
+
+    animation:popupFade 0.2s ease;
+}
+
+.popup-box h2{
+    margin:0 0 10px;
+}
+
+.popup-box textarea{
+
+    width:100%;
+    min-height:120px;
+
+    resize:none;
+
+    border:1px solid #ddd;
+
+    border-radius:12px;
+
+    padding:12px;
+
+    outline:none;
+
+    font-family:Arial;
+}
+
+.popup-box input[type="file"]{
+
+    border:1px solid #ddd;
+
+    border-radius:12px;
+
+    padding:10px;
+}
+
+.popup-actions{
+
+    display:flex;
+
+    gap:10px;
+
+    justify-content:flex-end;
+}
+
+@keyframes popupFade{
+
+    from{
+        opacity:0;
+        transform:scale(0.9);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+/* =========================
+   - PATIENTS TABLE
+========================= */
+
+.patients-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+.patients-table th{
+
+    background:#eef2ff;
+
+    color:#1e3a8a;
+
+    padding:14px;
+
+    font-size:15px;
+}
+
+.patients-table td{
+
+    padding:14px;
+
+    border-bottom:1px solid #eee;
+
+    vertical-align:middle;
+}
+
+.patients-table tr:hover{
+
+    background:#f8fafc;
+}
+
+/* =========================
+   - VIEW BUTTON
+========================= */
+
+.btn-history{
+
+    padding:10px 16px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1e3a8a,
+            #0ea5e9
+        );
+
+    color:#fff;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.25s;
+}
+
+.btn-history:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(14,165,233,.35);
+}
+
+
+/* =========================
+   - PRESCRIPTION ACTIONS
+========================= */
+
+.prescription-actions{
+
+    display:flex;
+
+    gap:15px;
+
+    margin-top:25px;
+
+    flex-wrap:wrap;
+}
+
+/* =========================
+   👁 VIEW BUTTON
+========================= */
+
+.view-prescription-btn{
+
+    border:none;
+
+    padding:12px 22px;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1e3a8a,
+            #0ea5e9
+        );
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    box-shadow:
+        0 10px 20px rgba(14,165,233,.25);
+}
+
+.view-prescription-btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 15px 30px rgba(14,165,233,.35);
+}
+
+/* =========================
+   ⬇ DOWNLOAD BUTTON
+========================= */
+
+.download-prescription-btn{
+
+    text-decoration:none;
+
+    padding:12px 22px;
+
+    border-radius:14px;
+
+    background:#f1f5f9;
+
+    color:#0f172a;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+    border:1px solid #cbd5e1;
+}
+
+.download-prescription-btn:hover{
+
+    background:#e2e8f0;
+
+    transform:translateY(-2px);
+}
+
+
+/* =========================
+   - REPORT STATS
+========================= */
+
+.report-stats{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+    margin-bottom:30px;
+}
+
+.report-box{
+
+    background:
+        linear-gradient(
+            135deg,
+            #1e3a8a,
+            #0ea5e9
+        );
+
+    color:#fff;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:
+        0 15px 35px rgba(14,165,233,.25);
+}
+
+.report-box h3{
+
+    margin:0;
+
+    font-size:36px;
+}
+
+.report-box p{
+
+    margin-top:10px;
+
+    opacity:.9;
+}
+
+.completed-box{
+
+    background:
+        linear-gradient(
+            135deg,
+            #16a34a,
+            #22c55e
+        );
+}
+
+.canceled-box{
+
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #ef4444
+        );
+}
+
+/* =========================
+   - REPORT TABLE
+========================= */
+
+.report-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+.report-table th{
+
+    background:#eef2ff;
+
+    color:#1e3a8a;
+
+    padding:14px;
+}
+
+.report-table td{
+
+    padding:14px;
+
+    border-bottom:1px solid #eee;
+}
+
+.report-table tr:hover{
+
+    background:#f8fafc;
+}
+
+/* =========================
+   - SHOW ALL BUTTON
+========================= */
+
+.btn-show-all{
+
+    padding:10px 20px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#0f172a;
+
+    color:#fff;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.25s;
+}
+
+.btn-show-all:hover{
+
+    transform:translateY(-2px);
+
+    background:#1e293b;
+}
+
+/* =========================
+   - EXPORT BUTTON
+========================= */
+
+.export-btn{
+
+    border:none;
+
+    padding:12px 22px;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #ef4444
+        );
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    margin-bottom:25px;
+
+    transition:.25s;
+
+    box-shadow:
+        0 10px 25px rgba(239,68,68,.25);
+}
+
+.export-btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 15px 35px rgba(239,68,68,.35);
+}
+
+
+/* =========================
+   - CHARTS
+========================= */
+
+.charts-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(350px,1fr));
+
+    gap:25px;
+
+    margin-bottom:30px;
+}
+
+.chart-card{
+
+    background:#fff;
+
+    border-radius:24px;
+
+    padding:25px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.06);
+
+    border:1px solid #eef2ff;
+}
+
+.chart-card h3{
+
+    margin-top:0;
+
+    margin-bottom:20px;
+
+    color:#1e3a8a;
+}
+
+
+/* =========================
+   - ANALYTICS BUTTON
+========================= */
+
+.analytics-btn{
+
+    border:none;
+
+    padding:12px 22px;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1e3a8a,
+            #0ea5e9
+        );
+
+    color:#fff;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    margin-bottom:25px;
+
+    transition:.25s;
+
+    box-shadow:
+        0 10px 25px rgba(14,165,233,.25);
+}
+
+.analytics-btn:hover{
+
+    transform:translateY(-2px);
+}
+
+/* =========================
+   - POPUP
+========================= */
+
+.analytics-popup{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        rgba(0,0,0,.55);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:99999;
+
+    padding:25px;
+}
+
+/* =========================
+   - BOX
+========================= */
+
+.analytics-box{
+
+    width:95%;
+
+    max-width:1300px;
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    background:#fff;
+
+    border-radius:30px;
+
+    padding:30px;
+
+    animation:popupFade .25s ease;
+}
+
+/* =========================
+   - HEADER
+========================= */
+
+.analytics-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+}
+
+.analytics-header h2{
+
+    margin:0;
+
+    color:#1e3a8a;
+}
+
+/* =========================
+   - CLOSE
+========================= */
+
+.close-analytics{
+
+    width:45px;
+
+    height:45px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#ef4444;
+
+    color:#fff;
+
+    font-size:18px;
+
+    cursor:pointer;
+}
+
+/* =========================
+    ANIMATION
+========================= */
+
+@keyframes popupFade{
+
+    from{
+
+        opacity:0;
+
+        transform:scale(.95);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:scale(1);
+    }
+}
+
+
+/* =========================
+   - INSIGHTS
+========================= */
+
+.insights-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(240px,1fr));
+
+    gap:20px;
+
+    margin-bottom:30px;
+}
+
+/* =========================
+   - CARD
+========================= */
+
+.insight-card{
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.95),
+            rgba(255,255,255,.8)
+        );
+
+    border:1px solid #eef2ff;
+
+    border-radius:24px;
+
+    padding:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.05);
+
+    transition:.25s;
+}
+
+.insight-card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 20px 40px rgba(0,0,0,.08);
+}
+
+/* =========================
+   - ICON
+========================= */
+
+.insight-icon{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1e3a8a,
+            #0ea5e9
+        );
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:28px;
+
+    color:#fff;
+
+    flex-shrink:0;
+}
+
+/* =========================
+   - TEXT
+========================= */
+
+.insight-card h4{
+
+    margin:0;
+
+    color:#64748b;
+
+    font-size:14px;
+
+    font-weight:600;
+}
+
+.insight-card p{
+
+    margin-top:8px;
+
+    margin-bottom:0;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#0f172a;
+}
+
+
+
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+#doctorName{
+    color:#fff;
+    font-size:20px;
+    font-weight:600;
+}
+
+.doctor-avatar{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#ffffff;
+    color:#0ea5e9;
+    font-weight:700;
+    font-size:18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-transform:uppercase;
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
+}
+
+/* =========================
+   - REPORT TABLE
+========================= */
+
+
+.report-table-wrapper{
+
+    width:100%;
+
+    height:350px;
+
+    overflow-y:auto;
+
+    overflow-x:auto;
+
+    margin-top:20px;
+
+    border-radius:15px;
+
+    border:1px solid #eee;
+    display: block;
+}
+
+/* - Scroll */
+.report-table-wrapper::-webkit-scrollbar{
+
+    width:8px;
+}
+
+.report-table-wrapper::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:20px;
+}
+
+/* - TABLE */
+.report-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+/* - HEADER ثابت */
+.report-table thead th{
+
+    position:sticky;
+
+    top:0;
+
+    background:#eef2ff;
+
+    z-index:10;
+
+    color:#1e3a8a;
+
+    padding:14px;
+
+    text-align:left;
+}
+
+.report-table td{
+
+    padding:14px;
+
+    border-bottom:1px solid #eee;
+}
+
+.report-table tr:hover{
+
+    background:#f8fafc;
+}
+
+
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <h2 class="logo">🧑‍⚕️ Smart Care Clinic</h2>
+
+    <ul class="menu">
+        <li class="active" onclick="showSection('today',this)">
+            <i class="fa fa-calendar-day"></i> Today Schedule
+        </li>
+
+        <li onclick="showSection('patients',this)">
+            <i class="fa fa-users"></i> Patients
+        </li>
+
+        <li onclick="showSection('reports',this)">
+            <i class="fa fa-chart-line"></i> Reports
+        </li>
+
+        <li onclick="showSection('profile',this)">
+            <i class="fa fa-user-md"></i> Profile
+        </li>
+
+        <li onclick="logout()" class="logout">
+            <i class="fa fa-sign-out-alt"></i> Logout
+        </li>
+    </ul>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+
+        <h3>Doctor Dashboard</h3>
+
+        <div class="nav-right">
+
+            <!-- DOCTOR NAME -->
+            <span id="doctorName">
+                Doctor
+            </span>
+
+            <!-- DOCTOR AVATAR -->
+            <div
+                id="doctorAvatar"
+                class="doctor-avatar"
+            >
+                DR
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- TODAY -->
+        <div id="today" class="section active">
+            <div class="card">
+                <h2>Today's Appointments</h2>
+                <div
+                    style="
+                        margin:20px 0;
+                        display:flex;
+                        align-items:center;
+                        gap:12px;
+                    "
+                >
+
+                    <label
+                        style="
+                            font-weight:600;
+                            color:#334155;
+                        "
+                    >
+                        Select Day:
+                    </label>
+
+                    <select
+                        id="daySelect"
+
+                        onchange="changeDayAppointments()"
+
+                        style="
+                            padding:10px 16px;
+                            border-radius:12px;
+                            border:1px solid #cbd5e1;
+                            font-size:15px;
+                            outline:none;
+                            cursor:pointer;
+                        "
+                    >
+
+                    </select>
+
+                </div>
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="todayAppointmentsBody">
+
+                        <!-- - البيانات هتيجي هنا -->
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+<!-- PATIENTS -->
+<div id="patients" class="section">
+
+    <div class="card">
+
+        <h2>My Patients</h2>
+
+        <table class="patients-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Patient</th>
+
+                    <th>Last Visit</th>
+
+                    <th>Last Diagnosis</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="patientsBody">
+
+                <!-- - DATA HERE -->
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+        <!-- REPORTS -->
+        <div id="reports" class="section">
+
+            <div class="card">
+                <h2>Reports</h2>
+
+                <div class="report-filters">
+                    <div class="input-box">
+                        <label>From</label>
+                        <input type="date">
+                    </div>
+
+                    <div class="input-box">
+                        <label>To</label>
+                        <input type="date">
+                    </div>
+
+                    <div
+                        style="
+                            display:flex;
+                            gap:15px;
+                            align-items:end;
+                            flex-wrap:wrap;
+                        "
+                    >
+
+                        <!-- - FILTER -->
+                        <button
+                            class="btn-show"
+
+                            onclick="showReport(false)"
+                        >
+                            Show Filtered
+                        </button>
+
+                        <!-- - SHOW ALL -->
+                        <button
+                            class="btn-show-all"
+
+                            onclick="showReport(true)"
+                        >
+                            Show All Bookings
+                        </button>
+
+                    </div>
+                </div>
+
+
+            </div>
+           <div
+    class="card"
+
+    id="resultsCard"
+
+    style="display:none;"
+>
+
+    <h2 class="card-title">
+        Booking Results
+    </h2>
+
+    <button
+        class="export-btn"
+
+        onclick="exportReportPDF()"
+    >
+        ⬇ Export PDF
+    </button>
+
+    <!-- - STATS -->
+    <div class="report-stats">
+
+        <div class="report-box">
+
+            <h3 id="totalBookings">0</h3>
+
+            <p>Total Bookings</p>
+
+        </div>
+
+        <div class="report-box completed-box">
+
+            <h3 id="completedBookings">0</h3>
+
+            <p>Completed</p>
+
+        </div>
+
+        <div class="report-box canceled-box">
+
+            <h3 id="canceledBookings">0</h3>
+
+            <p>Canceled</p>
+
+        </div>
+
+    </div>
+    <!-- =========================
+             CHARTS
+    ========================= -->
+        <button
+            class="analytics-btn"
+
+            onclick="openAnalyticsPopup()"
+        >
+            📊 View Analytics
+        </button>
+
+
+        </div>
+
+    <!-- - TABLE -->
+</button>
+
+<!-- - TABLE -->
+    <div class="report-table-wrapper">
+
+        <table class="report-table">
+
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Booking ID</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="reportBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+        </div>
+
+
+    <!-- PROFILE -->
+<div id="profile" class="section">
+
+    <!-- - CHANGE PASSWORD -->
+    <div class="card">
+
+        <h2 class="card-title">
+            Change Password
+        </h2>
+
+        <p
+            style="
+                color:#64748b;
+                margin-bottom:25px;
+            "
+        >
+            Update your account password securely
+        </p>
+
+        <div class="password-box">
+
+            <!-- OLD PASSWORD -->
+            <input
+                type="password"
+                id="oldPassword"
+                placeholder="Old Password"
+            >
+
+            <!-- NEW PASSWORD -->
+            <input
+                type="password"
+                id="newPassword"
+                placeholder="New Password"
+            >
+
+            <!-- CONFIRM PASSWORD -->
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm Password"
+            >
+
+        </div>
+
+        <!-- BUTTON -->
+        <button
+            class="btn-password"
+            onclick="changeDoctorPassword()"
+        >
+            Change Password
+        </button>
+
+        <!-- MESSAGE -->
+        <p
+            id="passwordMsg"
+
+            style="
+                margin-top:18px;
+                font-weight:600;
+            "
+        ></p>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     ✅ PRESCRIPTION POPUP
+========================= -->
+
+<div id="prescriptionPopup" class="popup-overlay">
+
+    <div class="popup-box">
+
+        <h2>Medical Report</h2>
+
+        <textarea 
+            id="diagnosisInput"
+            placeholder="Write diagnosis..."
+        ></textarea>
+
+        <textarea 
+            id="notesInput"
+            placeholder="Write prescription notes..."
+        ></textarea>
+
+        <input 
+            type="file"
+            id="prescriptionFile"
+            accept=".pdf,image/*"
+        >
+
+        <div class="popup-actions">
+
+            <button 
+                class="btn-save"
+                onclick="savePrescription()"
+            >
+                Save
+            </button>
+
+            <button 
+                class="btn-no"
+                onclick="closePrescriptionPopup()"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+       PATIENT HISTORY POPUP
+========================= -->
+
+<div
+    id="historyPopup"
+
+    style="
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.55);
+        display:none;
+        justify-content:center;
+        align-items:center;
+        z-index:9999;
+        padding:20px;
+    "
+>
+
+    <div
+        style="
+            width:100%;
+            max-width:1000px;
+            max-height:90vh;
+            overflow:auto;
+            background:#fff;
+            border-radius:24px;
+            padding:30px;
+            box-shadow:
+                0 25px 60px rgba(0,0,0,.25);
+        "
+    >
+
+        <!-- HEADER -->
+        <div
+            style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:25px;
+            "
+        >
+
+            <h2
+                style="
+                    margin:0;
+                    color:#1e3a8a;
+                "
+            >
+                Patient History
+            </h2>
+
+            <button
+                onclick="closeHistoryPopup()"
+
+                style="
+                    border:none;
+                    background:#ef4444;
+                    color:#fff;
+                    width:40px;
+                    height:40px;
+                    border-radius:50%;
+                    cursor:pointer;
+                    font-size:18px;
+                "
+            >
+                ✕
+            </button>
+
+        </div>
+
+        <!-- CONTENT -->
+        <div id="historyContainer">
+
+            <!-- DATA HERE -->
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     . ANALYTICS POPUP
+========================= -->
+
+<div
+    id="analyticsPopup"
+
+    class="analytics-popup"
+>
+
+    <div class="analytics-box">
+
+        <!-- HEADER -->
+        <div class="analytics-header">
+
+            <h2>
+                📊 Analytics Dashboard
+            </h2>
+
+            <button
+                class="close-analytics"
+
+                onclick="closeAnalyticsPopup()"
+            >
+                ✖
+            </button>
+
+        </div>
+        <!-- =========================
+     - INSIGHTS
+========================= -->
+
+<div class="insights-grid">
+
+    <!-- BUSY DAY -->
+    <div class="insight-card">
+
+        <span class="insight-icon">
+            📅
+        </span>
+
+        <div>
+
+            <h4>
+                Most Busy Day
+            </h4>
+
+            <p id="busyDay">
+                --
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- COMPLETION -->
+    <div class="insight-card">
+
+        <span class="insight-icon">
+            ✅
+        </span>
+
+        <div>
+
+            <h4>
+                Completion Rate
+            </h4>
+
+            <p id="completionRate">
+                --
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- CANCEL -->
+    <div class="insight-card">
+
+        <span class="insight-icon">
+            ❌
+        </span>
+
+        <div>
+
+            <h4>
+                Cancellation Rate
+            </h4>
+
+            <p id="cancelRate">
+                --
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- PEAK -->
+    <div class="insight-card">
+
+            <span class="insight-icon">
+                ⏰
+            </span>
+
+            <div>
+
+                <h4>
+                    Peak Hour
+                </h4>
+
+                <p id="peakHour">
+                    --
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+        <!-- CHARTS -->
+        <div class="charts-grid">
+
+            <!-- PIE -->
+            <div class="chart-card">
+
+                <h3>
+                    Booking Status
+                </h3>
+
+                <canvas id="statusChart"></canvas>
+
+            </div>
+
+            <!-- LINE -->
+            <div class="chart-card">
+
+                <h3>
+                    Bookings Per Day
+                </h3>
+
+                <canvas id="daysChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- //مكتبة PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- النماذج الاحصائيه -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    // =========================
+    // CHART INSTANCES
+    // =========================
+    let statusChartInstance = null;
+
+    let daysChartInstance = null;
+/* =========================
+   🔒 CHECK LOGIN أول حاجة
+========================= */
+(function(){
+
+    if(sessionStorage.getItem("doctor_logged_in") !== "true"){
+        window.location.replace("login_doctor.html");
+    }
+
+})();
+
+
+/* =========================
+   - AFTER PAGE LOAD
+========================= */
+window.onload = function(){
+
+    // تأكيد تاني (مهم)
+    if(sessionStorage.getItem("doctor_logged_in") !== "true"){
+        window.location.replace("login_doctor.html");
+        return;
+    }
+
+    /* - restore last section */
+    let savedSection = localStorage.getItem("activeSection");
+
+    if(savedSection){
+
+        let menuItems = document.querySelectorAll(".menu li");
+
+        menuItems.forEach(li=>{
+            if(li.getAttribute("onclick")?.includes(savedSection)){
+                showSection(savedSection, li);
+            }
+        });
+
+    }else{
+        showSection('today', document.querySelector('.menu li'));
+    }
+
+    /* - منع الرجوع */
+    blockBack();
+    loadDoctorDays();
+    loadPatients();
+};
+
+// =========================
+// - LOAD DOCTOR INFO
+// =========================
+function loadDoctorNavbar(){
+
+    const doctorData =
+        JSON.parse(
+            localStorage.getItem("doctor")
+        );
+
+    if(!doctorData){
+        return;
+    }
+
+    // =========================
+    // - NAME
+    // =========================
+    document.getElementById(
+        "doctorName"
+    ).innerText =
+        doctorData.name;
+
+    // =========================
+    // - AVATAR LETTERS
+    // =========================
+    const nameParts =
+        doctorData.name
+        .trim()
+        .split(" ");
+
+    let letters = "";
+
+    if(nameParts.length >= 2){
+
+        letters =
+            nameParts[0][0] +
+            nameParts[1][0];
+
+    }else{
+
+        letters =
+            doctorData.name.substring(0,2);
+    }
+
+    document.getElementById(
+        "doctorAvatar"
+    ).innerText =
+        letters.toUpperCase();
+}
+
+// =========================
+// - RUN
+// =========================
+loadDoctorNavbar();
+
+/* =========================
+   🚫 BLOCK BACK BUTTON
+========================= */
+function blockBack(){
+
+    // نخلي history ثابت
+    window.history.pushState(null, null, window.location.href);
+
+    window.onpopstate = function () {
+
+        if(sessionStorage.getItem("doctor_logged_in") !== "true"){
+            window.location.replace("login_doctor.html");
+        }else{
+            window.history.pushState(null, null, window.location.href);
+        }
+
+    };
+
+}
+
+
+/* =========================
+   - NAVIGATION
+========================= */
+function showSection(id, el){
+
+    document.querySelectorAll(".section").forEach(s=>{
+        s.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+
+    document.querySelectorAll(".menu li").forEach(li=>{
+        li.classList.remove("active");
+    });
+
+    if(el) el.classList.add("active");
+
+    localStorage.setItem("activeSection", id);
+}
+
+// =========================
+// - SHOW REPORT
+// =========================
+function showReport(showAll = false){
+
+    // =========================
+    // 🟢 DOCTOR
+    // =========================
+    const doctor = JSON.parse(
+        sessionStorage.getItem("doctor_data")
+    );
+
+    if(!doctor){
+
+        alert("Doctor not found");
+
+        return;
+    }
+
+    // =========================
+    // 🟢 DATES
+    // =========================
+    let from = "";
+
+    let to = "";
+
+    if(!showAll){
+
+        from =
+            document.querySelectorAll(
+                '.report-filters input'
+            )[0].value;
+
+        to =
+            document.querySelectorAll(
+                '.report-filters input'
+            )[1].value;
+
+        // - لازم يحدد تاريخ
+        if(!from || !to){
+
+            alert(
+                "Please select From and To dates"
+            );
+
+            return;
+        }
+    }
+
+    // =========================
+    // - FETCH
+    // =========================
+    fetch(
+        "get_doctor_reports.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+
+                doctor_id: doctor.id,
+
+                from,
+
+                to
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        console.log(
+            "REPORT:",
+            data
+        );
+
+        if(data.status !== "success"){
+
+            alert("Failed");
+
+            return;
+        }
+
+        // =========================
+        // - SHOW CARD
+        // =========================
+        document.getElementById(
+            "resultsCard"
+        ).style.display = "block";
+
+        // =========================
+        // - STATS
+        // =========================
+        document.getElementById(
+            "totalBookings"
+        ).innerText = data.total;
+
+        document.getElementById(
+            "completedBookings"
+        ).innerText = data.completed;
+
+        document.getElementById(
+            "canceledBookings"
+        ).innerText = data.canceled;
+
+        // =========================
+        // - TABLE
+        // =========================
+        let body =
+            document.getElementById(
+                "reportBody"
+            );
+
+        body.innerHTML = "";
+
+        // =========================
+        // ❌ EMPTY
+        // =========================
+        if(
+            !data.bookings ||
+            data.bookings.length === 0
+        ){
+
+            body.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="4"
+
+                        style="
+                            text-align:center;
+                            padding:30px;
+                            color:#888;
+                        "
+                    >
+
+                        No bookings found
+
+                    </td>
+
+                </tr>
+            `;
+
+            return;
+        }
+
+        // =========================
+        //  LOOP
+        // =========================
+
+        // =========================
+        //  RENDER CHARTS
+        // =========================
+        renderCharts(
+            data.bookings
+        );
+
+
+        data.bookings.forEach(b=>{
+
+            let statusClass = "";
+
+            if(b.Status === "Completed"){
+
+                statusClass = "confirmed";
+            }
+
+            else if(b.Status === "Canceled"){
+
+                statusClass = "absent";
+            }
+
+            else{
+
+                statusClass = "pending";
+            }
+
+            body.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        ${b.patient_name}
+                    </td>
+
+                    <td>
+                        #${b.Booking_ID}
+                    </td>
+
+                    <td>
+
+                        ${
+                            new Date(
+                                b.Booking_Date
+                            ).toLocaleString(
+                                "en-GB",
+                                {
+                                    day:"2-digit",
+                                    month:"short",
+                                    year:"numeric",
+                                    hour:"2-digit",
+                                    minute:"2-digit"
+                                }
+                            )
+                        }
+
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="
+                                status
+                                ${statusClass}
+                            "
+                        >
+
+                            ${b.Status}
+
+                        </span>
+
+                    </td>
+
+                </tr>
+            `;
+        });
+
+    })
+
+    .catch(err=>{
+
+        console.log(
+            "REPORT ERROR:",
+            err
+        );
+
+        alert("Server Error");
+    });
+}
+
+
+/* =========================
+   🔓 LOGOUT
+========================= */
+function logout(){
+
+    sessionStorage.removeItem("doctor_logged_in");
+    sessionStorage.removeItem("doctor_data");
+
+    // مهم جداً
+    window.location.replace("login_doctor.html");
+}
+
+// =========================
+// LOAD DAYS
+// =========================
+function loadDoctorDays(){
+
+    const doctor = JSON.parse(
+        sessionStorage.getItem(
+            "doctor_data"
+        )
+    );
+
+    fetch(
+        "../doctor_page/get_doctor_days.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+
+                doctor_id:
+                    doctor.id
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        console.log(
+            "DOCTOR DAYS:",
+            data
+        );
+
+        const select =
+            document.getElementById(
+                "daySelect"
+            );
+
+        select.innerHTML = "";
+
+        data.days.forEach(day=>{
+
+            select.innerHTML += `
+
+                <option value="${day}">
+                    ${day}
+                </option>
+            `;
+        });
+
+        // - LOAD FIRST DAY
+        if(data.days.length > 0){
+
+            loadTodayAppointments(
+                data.days[0]
+            );
+        }
+    });
+}
+
+// =========================
+// CHANGE DAY
+// =========================
+function changeDayAppointments(){
+
+    const day =
+        document.getElementById(
+            "daySelect"
+        ).value;
+
+    loadTodayAppointments(day);
+}
+
+// =========================
+// LOAD APPOINTMENTS
+// =========================
+function loadTodayAppointments(day){
+
+    const doctor = JSON.parse(
+        sessionStorage.getItem(
+            "doctor_data"
+        )
+    );
+
+    if(!doctor) return;
+
+    fetch(
+        "../doctor_page/get_today_appointments.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+
+                doctor_id:
+                    doctor.id,
+
+                day
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        console.log(
+            "APPOINTMENTS:",
+            data
+        );
+
+        const tbody =
+            document.getElementById(
+                "todayAppointmentsBody"
+            );
+
+        tbody.innerHTML = "";
+
+        // EMPTY
+        if(
+            data.status !== "success"
+            ||
+            data.appointments.length === 0
+        ){
+
+            tbody.innerHTML = `
+
+                <tr>
+
+                    <td colspan="4">
+
+                        No appointments
+
+                    </td>
+
+                </tr>
+            `;
+
+            return;
+        }
+
+        // LOOP
+        data.appointments.forEach(app=>{
+
+            let time =
+                new Date(
+                    app.Booking_Date
+                ).toLocaleTimeString([],{
+
+                    hour:"2-digit",
+                    minute:"2-digit"
+                });
+
+            tbody.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        ${app.Patient_Name}
+                    </td>
+
+                    <td>
+                        ${time}
+                    </td>
+
+                    <td>
+
+                        <span class="status confirmed">
+                            Confirmed
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button 
+                            class="btn-yes"
+
+                            onclick="
+                                openPrescriptionPopup(
+                                    ${app.Booking_ID}
+                                )
+                            "
+                        >
+                            Completed
+                        </button>
+
+                        <button 
+                            class="btn-no"
+
+                            onclick="
+                                markAbsent(
+                                    ${app.Booking_ID}
+                                )
+                            "
+                        >
+                            Absent
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+        });
+
+    });
+}
+
+
+// =========================
+// ❌ Mark Patient Absent
+// =========================
+function markAbsent(booking_id){
+
+    if(!confirm(
+        "Mark this patient as absent?"
+    )){
+        return;
+    }
+
+    fetch("../doctor_page/mark_absent.php",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body: JSON.stringify({
+            booking_id
+        })
+
+    })
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        console.log("ABSENT RESPONSE:", data);
+
+        if(data.status === "success"){
+
+            alert(
+                "Patient marked as absent ❌"
+            );
+
+            // - Reload الجدول
+            loadDoctorDays();
+
+        }else{
+
+            alert(
+                data.message || "Error"
+            );
+        }
+
+    })
+
+    .catch(err=>{
+
+        console.log(
+            "ABSENT ERROR:",
+            err
+        );
+
+        alert("Server Error");
+    });
+}
+
+
+
+// =========================
+// - CURRENT BOOKING
+// =========================
+let currentBookingId = null;
+
+
+// =========================
+// ✅ OPEN POPUP
+// =========================
+function openPrescriptionPopup(booking_id){
+
+    currentBookingId = booking_id;
+
+    document.getElementById(
+        "prescriptionPopup"
+    ).style.display = "flex";
+}
+
+
+// =========================
+// ❌ CLOSE POPUP
+// =========================
+function closePrescriptionPopup(){
+
+    currentBookingId = null;
+
+    document.getElementById(
+        "prescriptionPopup"
+    ).style.display = "none";
+
+    document.getElementById(
+        "diagnosisInput"
+    ).value = "";
+
+    document.getElementById(
+        "notesInput"
+    ).value = "";
+
+    document.getElementById(
+        "prescriptionFile"
+    ).value = "";
+}
+
+
+
+// =========================
+// ✅ SAVE PRESCRIPTION
+// =========================
+function savePrescription(){
+
+    if(!currentBookingId){
+        alert("Missing booking");
+        return;
+    }
+
+    const diagnosis = document.getElementById(
+        "diagnosisInput"
+    ).value.trim();
+
+    const notes = document.getElementById(
+        "notesInput"
+    ).value.trim();
+
+    const file = document.getElementById(
+        "prescriptionFile"
+    ).files[0];
+
+    // 🔴 Validation
+    if(!diagnosis && !notes && !file){
+
+        alert(
+            "Please enter diagnosis or upload file"
+        );
+
+        return;
+    }
+
+    // =========================
+    // 🟢 FORM DATA
+    // =========================
+    let formData = new FormData();
+
+    formData.append(
+        "booking_id",
+        currentBookingId
+    );
+
+    formData.append(
+        "diagnosis",
+        diagnosis
+    );
+
+    formData.append(
+        "notes",
+        notes
+    );
+
+    if(file){
+        formData.append(
+            "file",
+            file
+        );
+    }
+
+    // =========================
+    // - SEND
+    // =========================
+    fetch(
+        "../doctor_page/save_prescription.php",
+        {
+            method:"POST",
+            body: formData
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        console.log(
+            "SAVE PRESCRIPTION:",
+            data
+        );
+
+        if(data.status === "success"){
+
+            alert(
+                "Prescription saved ✅"
+            );
+
+            // - قفل popup
+            closePrescriptionPopup();
+
+            // - Reload الجدول
+           loadDoctorDays();
+
+        }else{
+
+            alert(
+                data.message || "Error"
+            );
+        }
+
+    })
+
+    .catch(err=>{
+
+        console.log(
+            "SAVE ERROR:",
+            err
+        );
+
+        alert("Server Error");
+    });
+}
+
+
+
+
+// =========================
+// - LOAD PATIENTS
+// =========================
+function loadPatients(){
+
+    // - بيانات الدكتور
+    const doctor = JSON.parse(
+        sessionStorage.getItem("doctor_data")
+    );
+
+    if(!doctor){
+
+        console.log("Doctor not found");
+
+        return;
+    }
+
+    fetch(
+        "get_doctor_patients.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+
+                doctor_id: doctor.id
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        console.log(
+            "PATIENTS:",
+            data
+        );
+
+        let body = document.getElementById(
+            "patientsBody"
+        );
+
+        body.innerHTML = "";
+
+        // =========================
+        // ❌ EMPTY
+        // =========================
+        if(!data || data.length === 0){
+
+            body.innerHTML = `
+                <tr>
+
+                    <td colspan="4"
+                        style="
+                            text-align:center;
+                            padding:30px;
+                            color:#888;
+                        "
+                    >
+
+                        No patients yet
+
+                    </td>
+
+                </tr>
+            `;
+
+            return;
+        }
+
+        // =========================
+        // - LOOP
+        // =========================
+        data.forEach(p=>{
+
+            body.innerHTML += `
+
+                <tr>
+
+                    <td>${p.name}</td>
+
+                    <td>
+                        ${
+                            p.last_visit
+                            ?
+                            p.last_visit
+                            :
+                            "-"
+                        }
+                    </td>
+
+                    <td>
+                        ${p.diagnosis}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-history"
+
+                            onclick="
+                                openPatientHistory(
+                                    ${p.patient_id}
+                                )
+                            "
+                        >
+
+                            View History
+
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+        });
+
+    })
+
+    .catch(err=>{
+
+        console.log(
+            "PATIENTS ERROR:",
+            err
+        );
+    });
+}
+
+
+
+// =========================
+// - OPEN PATIENT HISTORY
+// =========================
+function openPatientHistory(patient_id){
+
+    fetch(
+        "get_patient_history.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+                patient_id
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        console.log(
+            "PATIENT HISTORY:",
+            data
+        );
+
+        let container = document.getElementById(
+            "historyContainer"
+        );
+
+        container.innerHTML = "";
+
+        // =========================
+        // ❌ EMPTY
+        // =========================
+        if(!data || data.length === 0){
+
+            container.innerHTML = `
+                <div
+                    style="
+                        text-align:center;
+                        color:#888;
+                        padding:40px;
+                    "
+                >
+                    No history found
+                </div>
+            `;
+
+            document.getElementById(
+                "historyPopup"
+            ).style.display = "flex";
+
+            return;
+        }
+
+        // =========================
+        // - LOOP
+        // =========================
+        data.forEach(item=>{
+
+            // =========================
+            // - FILE HTML
+            // =========================
+            let fileHtml = "";
+
+            if(item.file){
+
+                let ext = item.file
+                    .split(".")
+                    .pop()
+                    .toLowerCase();
+
+                let filePath =
+                    "../uploads/prescriptions/"
+                    + item.file;
+
+                // =========================
+                // 🖼 IMAGE
+                // =========================
+                if(
+                    ext === "jpg" ||
+                    ext === "jpeg" ||
+                    ext === "png" ||
+                    ext === "webp"
+                ){
+
+                    fileHtml = `
+
+                        <div class="prescription-actions">
+
+                            <button
+                                class="view-prescription-btn"
+
+                                onclick="
+                                    window.open(
+                                        '${filePath}',
+                                        '_blank'
+                                    )
+                                "
+                            >
+                                👁 View Prescription
+                            </button>
+
+                            <a
+                                href="${filePath}"
+                                download
+
+                                class="download-prescription-btn"
+                            >
+                                ⬇ Download Prescription
+                            </a>
+
+                        </div>
+                    `;
+                }
+
+                // =========================
+                // 📄 PDF
+                // =========================
+                else if(ext === "pdf"){
+
+                    fileHtml = `
+
+                        <div class="prescription-actions">
+
+                            <button
+                                class="view-prescription-btn"
+
+                                onclick="
+                                    window.open(
+                                        '${filePath}',
+                                        '_blank'
+                                    )
+                                "
+                            >
+                                📄 View PDF
+                            </button>
+
+                            <a
+                                href="${filePath}"
+                                download
+
+                                class="download-prescription-btn"
+                            >
+                                ⬇ Download PDF
+                            </a>
+
+                        </div>
+                    `;
+                }
+            }
+
+            // =========================
+            // - CARD
+            // =========================
+            container.innerHTML += `
+
+                <div
+
+                    style="
+                        background:#f8fafc;
+                        border:1px solid #e2e8f0;
+                        border-radius:22px;
+                        padding:25px;
+                        margin-bottom:25px;
+                    "
+                >
+
+                    <!-- TOP -->
+                    <div
+                        style="
+                            display:flex;
+                            justify-content:space-between;
+                            align-items:center;
+                            margin-bottom:15px;
+                            flex-wrap:wrap;
+                            gap:10px;
+                        "
+                    >
+
+                        <h3
+                            style="
+                                margin:0;
+                                color:#1e3a8a;
+                            "
+                        >
+                            ${item.doctor_name}
+                        </h3>
+
+                        <span
+                            style="
+                                background:#dbeafe;
+                                color:#1e3a8a;
+                                padding:8px 14px;
+                                border-radius:999px;
+                                font-size:14px;
+                                font-weight:600;
+                            "
+                        >
+                            ${item.created_at}
+                        </span>
+
+                    </div>
+
+                    <!-- NOTES -->
+                    <pre
+                        style="
+                            white-space:pre-wrap;
+                            line-height:1.8;
+                            font-size:15px;
+                            color:#334155;
+                            margin:0;
+                        "
+                    >${item.notes}</pre>
+
+                    ${fileHtml}
+
+                </div>
+            `;
+        });
+
+        // =========================
+        // - OPEN POPUP
+        // =========================
+        document.getElementById(
+            "historyPopup"
+        ).style.display = "flex";
+
+    })
+
+    .catch(err=>{
+
+        console.log(
+            "HISTORY ERROR:",
+            err
+        );
+
+        alert("Server Error");
+    });
+}
+
+
+// =========================
+// ❌ CLOSE POPUP
+// =========================
+function closeHistoryPopup(){
+
+    document.getElementById(
+        "historyPopup"
+    ).style.display = "none";
+}
+
+// =========================
+//  OPEN ANALYTICS
+// =========================
+function openAnalyticsPopup(){
+
+    document.getElementById(
+        "analyticsPopup"
+    ).style.display = "flex";
+}
+
+// =========================
+//  CLOSE ANALYTICS
+// =========================
+function closeAnalyticsPopup(){
+
+    document.getElementById(
+        "analyticsPopup"
+    ).style.display = "none";
+}
+
+// ========================
+//  RENDER CHARTS
+// =========================
+function renderCharts(bookings){
+
+    // =========================
+    // 🟢 STATUS COUNT
+    // =========================
+    let completed = 0;
+
+    let confirmed = 0;
+
+    let canceled = 0;
+
+    // =========================
+    // 🟢 DAYS COUNT
+    // =========================
+    let daysMap = {
+
+        Sun:0,
+        Mon:0,
+        Tue:0,
+        Wed:0,
+        Thu:0,
+        Fri:0,
+        Sat:0
+    };
+
+    // =========================
+    // - LOOP
+    // =========================
+    bookings.forEach(b=>{
+
+        // =========================
+        // 🟢 STATUS
+        // =========================
+        if(b.Status === "Completed"){
+
+            completed++;
+        }
+
+        else if(b.Status === "Confirmed"){
+
+            confirmed++;
+        }
+
+        else if(b.Status === "Canceled"){
+
+            canceled++;
+        }
+
+        // =========================
+        // 🟢 DAYS
+        // =========================
+        let date = new Date(
+            b.Booking_Date
+        );
+
+        let day = date.toLocaleDateString(
+            "en-US",
+            {
+                weekday:"short"
+            }
+        );
+
+        daysMap[day]++;
+    });
+
+    // =========================
+    //  INSIGHTS
+    // =========================
+
+    // 🟢 MOST BUSY DAY
+    let busyDay = "N/A";
+
+    let maxDay = 0;
+
+    Object.entries(daysMap)
+    .forEach(([day,count])=>{
+
+        if(count > maxDay){
+
+            maxDay = count;
+
+            busyDay = day;
+        }
+    });
+
+    // =========================
+    // 🟢 COMPLETION RATE
+    // =========================
+    let totalBookings =
+        bookings.length;
+
+    let completionRate = 0;
+
+    let cancelRate = 0;
+
+    if(totalBookings > 0){
+
+        completionRate = Math.round(
+            (completed / totalBookings) * 100
+        );
+
+        cancelRate = Math.round(
+            (canceled / totalBookings) * 100
+        );
+    }
+
+    // =========================
+    // 🟢 PEAK HOUR
+    // =========================
+    let hourMap = {};
+
+    bookings.forEach(b=>{
+
+        let date = new Date(
+            b.Booking_Date
+        );
+
+        let hour = date.getHours();
+
+        hourMap[hour] =
+            (hourMap[hour] || 0) + 1;
+    });
+
+    let peakHour = "N/A";
+
+    let maxHour = 0;
+
+    Object.entries(hourMap)
+    .forEach(([hour,count])=>{
+
+        if(count > maxHour){
+
+            maxHour = count;
+
+            peakHour = hour;
+        }
+    });
+
+    // =========================
+    // - FORMAT PEAK HOUR
+    // =========================
+    if(peakHour !== "N/A"){
+
+        let h = Number(peakHour);
+
+        let suffix =
+            h >= 12 ? "PM" : "AM";
+
+        h = h % 12 || 12;
+
+        peakHour =
+            `${h}:00 ${suffix}`;
+    }
+
+    // =========================
+    // - UPDATE UI
+    // =========================
+    document.getElementById(
+        "busyDay"
+    ).innerText = busyDay;
+
+    document.getElementById(
+        "completionRate"
+    ).innerText =
+        completionRate + "%";
+
+    document.getElementById(
+        "cancelRate"
+    ).innerText =
+        cancelRate + "%";
+
+    document.getElementById(
+        "peakHour"
+    ).innerText =
+        peakHour;
+
+    // =========================
+    //  DESTROY OLD
+    // =========================
+    if(statusChartInstance){
+
+        statusChartInstance.destroy();
+    }
+
+    if(daysChartInstance){
+
+        daysChartInstance.destroy();
+    }
+
+    // =========================
+    // - STATUS CHART
+    // =========================
+    const statusCtx = document
+        .getElementById("statusChart");
+
+    statusChartInstance =
+        new Chart(statusCtx, {
+
+            type:"pie",
+
+            data:{
+
+                labels:[
+                    "Completed",
+                    "Confirmed",
+                    "Canceled"
+                ],
+
+                datasets:[{
+
+                    data:[
+                        completed,
+                        confirmed,
+                        canceled
+                    ],
+
+                    backgroundColor:[
+                        "#22c55e",
+                        "#3b82f6",
+                        "#ef4444"
+                    ],
+
+                    borderWidth:0
+                }]
+            },
+
+            options:{
+
+                responsive:true,
+
+                plugins:{
+
+                    legend:{
+                        position:"bottom"
+                    }
+                }
+            }
+        });
+
+    // =========================
+    // - DAYS CHART
+    // =========================
+    const daysCtx = document
+        .getElementById("daysChart");
+
+    daysChartInstance =
+        new Chart(daysCtx, {
+
+            type:"line",
+
+            data:{
+
+                labels:
+                    Object.keys(daysMap),
+
+                datasets:[{
+
+                    label:"Bookings",
+
+                    data:
+                        Object.values(daysMap),
+
+                    borderColor:"#1e3a8a",
+
+                    backgroundColor:
+                        "rgba(59,130,246,.15)",
+
+                    fill:true,
+
+                    tension:.4
+                }]
+            },
+
+            options:{
+
+                responsive:true,
+
+                plugins:{
+                    legend:{
+                        display:false
+                    }
+                }
+            }
+        });
+}
+
+// =========================
+// - EXPORT REPORT PDF
+// =========================
+function exportReportPDF(){
+
+    const {
+        jsPDF
+    } = window.jspdf;
+
+    const doc = new jsPDF();
+
+    // =========================
+    // 🟢 DOCTOR
+    // =========================
+    const doctor = JSON.parse(
+        sessionStorage.getItem(
+            "doctor_data"
+        )
+    );
+
+    // =========================
+    // - TITLE
+    // =========================
+    doc.setFontSize(22);
+
+    doc.text(
+        "Doctor Report",
+        20,
+        20
+    );
+
+    // =========================
+    // 🟢 INFO
+    // =========================
+    doc.setFontSize(12);
+
+    doc.text(
+        `Doctor: ${doctor.name}`,
+        20,
+        35
+    );
+
+    // =========================
+    // - DATE FORMAT
+    // =========================
+    const now = new Date();
+
+    const formattedDate =
+
+        now.getDate().toString().padStart(2,'0')
+        + "/"
+        + (now.getMonth()+1).toString().padStart(2,'0')
+        + "/"
+        + now.getFullYear()
+        + " - "
+        + now.getHours().toString().padStart(2,'0')
+        + ":"
+        + now.getMinutes().toString().padStart(2,'0');
+
+    // =========================
+    // 🟢 GENERATED DATE
+    // =========================
+    doc.text(
+        `Generated: ${formattedDate}`,
+        20,
+        43
+    );
+
+    // =========================
+    // - STATS
+    // =========================
+    const total =
+        document.getElementById(
+            "totalBookings"
+        ).innerText;
+
+    const completed =
+        document.getElementById(
+            "completedBookings"
+        ).innerText;
+
+    const canceled =
+        document.getElementById(
+            "canceledBookings"
+        ).innerText;
+
+    doc.text(
+        `Total Bookings: ${total}`,
+        20,
+        60
+    );
+
+    doc.text(
+        `Completed: ${completed}`,
+        20,
+        68
+    );
+
+    doc.text(
+        `Canceled: ${canceled}`,
+        20,
+        76
+    );
+
+    // =========================
+    // - TABLE
+    // =========================
+    let y = 95;
+
+    doc.setFontSize(14);
+
+    doc.text(
+        "Bookings",
+        20,
+        y
+    );
+
+    y += 12;
+
+    // =========================
+    // 🟢 HEADERS
+    // =========================
+    doc.setFontSize(11);
+
+    doc.text("Patient", 20, y);
+
+    doc.text("Booking ID", 80, y);
+
+    doc.text("Date", 130, y);
+
+    y += 10;
+
+    // =========================
+    // - ROWS
+    // =========================
+    document
+        .querySelectorAll(
+            "#reportBody tr"
+        )
+
+        .forEach(row=>{
+
+            let cols =
+                row.querySelectorAll("td");
+
+            if(cols.length >= 3){
+
+                doc.text(
+                    cols[0].innerText,
+                    20,
+                    y
+                );
+
+                doc.text(
+                    cols[1].innerText,
+                    80,
+                    y
+                );
+
+                doc.text(
+                    cols[2].innerText,
+                    130,
+                    y
+                );
+
+                y += 10;
+            }
+        });
+
+    // =========================
+    // - SAVE
+    // =========================
+    doc.save(
+        "doctor_report.pdf"
+    );
+}
+
+// =========================
+// - SEARCH INPUT
+// =========================
+const patientSearch =
+    document.getElementById(
+        "patientSearch"
+    );
+
+const patientResults =
+    document.getElementById(
+        "patientResults"
+    );
+
+
+
+// =========================
+// - CHANGE PASSWORD
+// =========================
+function changeDoctorPassword(){
+
+    const oldPassword =
+        document.getElementById(
+            "oldPassword"
+        ).value.trim();
+
+    const newPassword =
+        document.getElementById(
+            "newPassword"
+        ).value.trim();
+
+    const confirmPassword =
+        document.getElementById(
+            "confirmPassword"
+        ).value.trim();
+
+    const msg =
+        document.getElementById(
+            "passwordMsg"
+        );
+
+    // =========================
+    // - GET DOCTOR DATA
+    // =========================
+    const doctorData =
+        JSON.parse(
+            sessionStorage.getItem(
+                "doctor_data"
+            )
+        );
+
+    // =========================
+    // 🔴 VALIDATION
+    // =========================
+    if(
+        !oldPassword
+        ||
+        !newPassword
+        ||
+        !confirmPassword
+    ){
+
+        msg.style.color = "red";
+
+        msg.innerText =
+            "Fill all fields";
+
+        return;
+    }
+
+    if(newPassword !== confirmPassword){
+
+        msg.style.color = "red";
+
+        msg.innerText =
+            "Passwords do not match";
+
+        return;
+    }
+
+    // =========================
+    // - REQUEST
+    // =========================
+    fetch(
+        "change_doctor_password.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+
+                doctor_id:
+                    doctorData.id,
+
+                old_password:
+                    oldPassword,
+
+                new_password:
+                    newPassword
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.status === "success"){
+
+            msg.style.color =
+                "#16a34a";
+
+            msg.innerText =
+                "✅ Password updated successfully";
+
+            // CLEAR INPUTS
+            document.getElementById(
+                "oldPassword"
+            ).value = "";
+
+            document.getElementById(
+                "newPassword"
+            ).value = "";
+
+            document.getElementById(
+                "confirmPassword"
+            ).value = "";
+
+        }else{
+
+            msg.style.color =
+                "red";
+
+            msg.innerText =
+                data.message;
+        }
+
+    })
+
+    .catch(()=>{
+
+        msg.style.color =
+            "red";
+
+        msg.innerText =
+            "Server Error";
+    });
+}
+
+
+</script>
+
+</body>
+</html>

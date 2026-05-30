@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Specialties</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin</h2>
+        <ul>
+            <li onclick="go('dashboard.html')">🏠 Dashboard</li>
+            <li class="active">🧾 Specialties</li>
+            <li onclick="go('doctors.html')">👨‍⚕️ Doctors</li>
+            <li onclick="go('patients.html')">🧑 Patients</li>
+            <li onclick="go('booking.html')">📅 Booking</li>
+            <li onclick="go('manage_accounts.html')">⚙️ Accounts</li>
+            <li onclick="go('reports.html')">📊 Reports</li>
+        </ul>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <div class="navbar">
+            <h3>Manage Specialties</h3>
+            <button onclick="logout()">Logout</button>
+        </div>
+
+        <div class="content">
+
+            <!-- Add -->
+            <div class="form-box">
+                <input type="text" id="name" placeholder="Specialty Name">
+                <input type="text" id="desc" placeholder="Description">
+                
+                <input type="hidden" id="specialty_id">
+                <button id="saveBtn" onclick="saveSpecialty()">Add Specialty</button>
+            </div>
+
+            <!-- Table -->
+            <div class="table-box">
+                <h3>Specialty List</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="specialtyTable"></tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+/* ===== FORM BOX ===== */
+.form-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.form-box input,
+.form-box select {
+    flex: 1;
+    min-width: 160px;
+
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-box input:focus,
+.form-box select:focus {
+    border-color: #1abc9c;
+    box-shadow: 0 0 5px rgba(26,188,156,0.3);
+}
+
+.form-box button {
+    padding: 10px 18px;
+    background: #1abc9c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.form-box button:hover {
+    background: #16a085;
+}
+
+/* ===== TABLE ===== */
+.table-box {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+table th,
+table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    word-wrap: break-word;
+}
+
+table th {
+    background: #f9f9f9;
+}
+
+/* ===== ACTION COLUMN ===== */
+table th:last-child,
+table td:last-child {
+    width: 150px;
+}
+
+/* ===== BUTTONS ===== */
+table td button {
+    padding: 5px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    margin: 2px;
+}
+
+/* Edit */
+table td button:first-child {
+    background: #3498db;
+    color: #fff;
+}
+
+/* Delete */
+table td button:last-child {
+    background: #e74c3c;
+    color: #fff;
+}
+
+/* Hover */
+table td button:hover {
+    opacity: 0.8;
+}
+
+#saveBtn.edit-mode {
+    background: #f39c12;
+}
+</style>
+
+<script src="./js/specialty.js"></script>
+</body>
+</html>

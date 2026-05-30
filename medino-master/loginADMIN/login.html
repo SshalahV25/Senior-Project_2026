@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Medino</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<!-- 🔷 BACK BUTTON -->
+<a href="../Login_page.html" class="back-btn">
+    <i class="fa-solid fa-arrow-left"></i> Back
+</a>
+
+<!-- 🔷 LOGIN -->
+<div class="login-wrapper">
+
+    <div class="login-box">
+
+        <!-- ICON -->
+        <div class="admin-icon">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+
+        <h2>Admin Login</h2>
+        <p>Secure access to dashboard</p>
+
+        <form onsubmit="login(event)">
+
+            <div class="input-group">
+                <input type="text" id="username" placeholder="Username" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+
+            <button type="submit">Login</button>
+            <p id="msg"></p>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="./js/main.js"></script>
+
+</body>
+</html>

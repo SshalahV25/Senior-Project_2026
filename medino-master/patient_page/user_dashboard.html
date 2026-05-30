@@ -1,0 +1,4048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins,sans-serif;
+}
+
+body{
+    display:flex;
+    background:#f4f6fb;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:250px;
+    height:100vh;
+    background:linear-gradient(180deg,#1e3a8a,#06b6d4);
+    color:#fff;
+    padding:20px;
+    position:fixed;
+    transition:0.3s;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+}
+
+/* 🔴 لما يتقفل */
+.sidebar.hide{
+    transform:translateX(-100%);
+}
+
+/* 🔵 Overlay */
+.overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.4);
+    display:none;
+    z-index:999;
+}
+
+/* 🔥 لما يفتح */
+.overlay.show{
+    display:block;
+}
+
+.logo{
+    margin-bottom:30px;
+}
+
+/* MENU */
+.menu li{
+    list-style:none;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition:0.3s;
+}
+
+.menu{
+    list-style:none;
+    padding:0;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    height:100%;
+}
+
+.menu li:hover{
+    background:rgba(255,255,255,0.2);
+}
+
+.menu li.active{
+    background:rgba(255,255,255,0.25);
+}
+
+.menu .logout{
+    margin-top:auto;
+    background:#ff4d4d;
+    border-radius:10px;
+    padding:12px;
+    text-align:left;
+}
+
+.logout{
+    background:#ef4444;
+    margin-top:20px;
+}
+
+/* MAIN */
+.main{
+    margin-left:250px;
+    width:100%;
+    transition:0.3s;
+}
+
+.main.full{
+    margin-left:0;
+}
+
+/* NAVBAR */
+.navbar{
+    background:linear-gradient(90deg,#1e3a8a,#06b6d4);
+    color:#fff;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position: relative;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 🔥 تثبيت زرار التلت شرط */
+#menuBtn {
+    position: absolute;
+    left: 40px; /* غير الرقم حسب مكانه اللي عاجبك */
+    top: 50%;
+    font-size: 20px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: 0.5s;
+}
+#menuBtn:hover {
+    font-size:25px ;
+}
+
+/* 🔥 مهم جدا */
+body[dir="rtl"] #menuBtn {
+    left: 40px; /* نفس المكان - مش يتعكس */
+    right: auto;
+}
+
+/* LEFT */
+.left{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.username{
+    font-weight:bold;
+    font-size:16px;
+}
+
+.nav-username{
+    font-weight:600;
+    font-size:14px;
+    color:#fff;
+}
+
+/* RIGHT */
+.right{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-left: 55px
+}
+
+/* 🔥 Language Button */
+.lang-btn{
+    background:rgba(255,255,255,0.2);
+    border:1px solid rgba(255,255,255,0.4);
+    padding:6px 14px;
+    border-radius:20px;
+    color:#fff;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.lang-btn:hover{
+    background:#fff;
+    color:#1e3a8a;
+}
+
+/* PROFILE */
+.profile img{
+    border-radius:50%;
+    width:35px;
+}
+
+/* CONTENT */
+.content{
+    padding:20px;
+}
+
+/* 🔥 Card */
+.card{
+    background:#fff;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    margin-top:20px;
+}
+
+/* Title */
+.card-title{
+    margin-bottom:20px;
+    font-size:20px;
+}
+
+/* Form */
+.appointment-form{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+/* Group */
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+/* Labels */
+.form-group label{
+    margin-bottom:6px;
+    font-size:14px;
+    font-weight:500;
+}
+
+/* Inputs */
+.form-group input,
+.form-group select{
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    outline:none;
+    transition:0.3s;
+}
+
+/* Focus */
+.form-group input:focus,
+.form-group select:focus{
+    border-color:#2a7be4;
+    box-shadow:0 0 6px rgba(42,123,228,0.3);
+}
+
+/* Button */
+.btn-book{
+    grid-column:span 2;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(45deg,#2a7be4,#00c6ff);
+    color:#fff;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+/* Hover */
+.btn-book:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* 🔥 Table */
+.booking-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+/* Header */
+.booking-table th{
+    text-align:left;
+    padding:12px;
+    background:#f5f7fa;
+    font-weight:600;
+}
+
+/* Rows */
+.booking-table td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+}
+
+/* Hover */
+.booking-table tr:hover{
+    background:#f9fbfd;
+}
+
+/* Status */
+.status{
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+    color:#100e0e;
+}
+
+.status.active{
+    background:#28a745;
+    color: white;
+}
+
+.status.pending{
+    background:#ffc107;
+    color: white;
+
+}
+
+.status.cancel{
+    background:#dc3545;
+    color: white;
+
+}
+
+/* Buttons */
+.btn-cancel{
+    padding:6px 12px;
+    border:none;
+    border-radius:8px;
+    background:#ff4d4d;
+    color:#fff;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn-cancel:hover{
+    background:#e60000;
+}
+
+/* Edit Button */
+.btn-edit{
+    padding:6px 12px;
+    border:none;
+    border-radius:8px;
+    background:#ffc107;
+    color:#000;
+    cursor:pointer;
+    margin-right:5px;
+    transition:0.3s;
+}
+
+.btn-edit:hover{
+    background:#e0a800;
+}
+
+/* Pagination */
+.pagination{
+    margin-top:20px;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+}
+
+.page-btn{
+    padding:8px 12px;
+    border:none;
+    border-radius:6px;
+    background:#2a7be4;
+    color:#fff;
+    cursor:pointer;
+}
+
+.page-btn.active{
+    background:#000;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.input-group input {
+    flex: 1;
+}
+
+.edit-btn {
+    padding: 6px 10px;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.edit-btn.save {
+    background: #28a745;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #f5f7fa;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+/* لما يتفتح */
+.input-group input:enabled {
+    background: #fff;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.2);
+}
+
+/* زرار */
+.edit-btn {
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(45deg, #007bff, #00c6ff);
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.edit-btn:hover {
+    transform: scale(1.05);
+}
+
+/* لما يبقى Save */
+.edit-btn.save {
+    background: linear-gradient(45deg, #28a745, #5cd65c);
+}
+
+/* الكارد نفسها */
+.card {
+    padding: 20px;
+}
+
+/* العنوان */
+.card-title {
+    margin-bottom: 15px;
+}
+
+/* inputs */
+.card input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #f5f7fa;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+/* لما المستخدم يكتب */
+.card input[type="password"]:focus {
+    background: #fff;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.2);
+    outline: none;
+}
+
+/* الزرار */
+.card .btn-book {
+    width: fit-content;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: linear-gradient(45deg, #007bff, #00c6ff);
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* hover */
+.card .btn-book:hover {
+    transform: scale(1.05);
+}
+
+body[dir="rtl"] .booking-table {
+    direction: rtl;
+}
+
+body[dir="rtl"] .booking-table th,
+body[dir="rtl"] .booking-table td {
+    text-align: right;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+
+    .sidebar{
+        left:-250px;
+    }
+
+    .sidebar.show{
+        left:0;
+    }
+
+    .main{
+        margin-left:0;
+    }
+}
+
+@media(max-width:768px){
+    .appointment-form{
+        grid-template-columns:1fr;
+    }
+
+    .btn-book{
+        grid-column:span 1;
+    }
+}
+
+/* 🔥 Responsive Table */
+@media(max-width:768px){
+
+    .booking-table thead{
+        display:none;
+    }
+
+    .booking-table,
+    .booking-table tbody,
+    .booking-table tr,
+    .booking-table td{
+        display:block;
+        width:100%;
+    }
+
+    .booking-table tr{
+        background:#fff;
+        margin-bottom:15px;
+        padding:15px;
+        border-radius:12px;
+        box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .booking-table td{
+        display:flex;
+        justify-content:space-between;
+        padding:10px 0;
+        border:none;
+        border-bottom:1px solid #eee;
+    }
+
+    .booking-table td:last-child{
+        border-bottom:none;
+    }
+
+    .booking-table td::before{
+        content:attr(data-label);
+        font-weight:bold;
+        color:#555;
+    }
+
+    /* buttons */
+    .btn-edit,
+    .btn-cancel{
+        font-size:12px;
+        padding:5px 8px;
+    }
+}
+
+
+/* 🔥 Sidebar Mobile */
+/* 👇 بدل 768 خليه 992 */
+@media (max-width: 992px) {
+
+    .sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        height: 100%;
+        width: 260px;
+        transition: 0.3s;
+        z-index: 1000;
+    }
+
+    .sidebar.show {
+        left: 259px;
+        padding-top: 56px;
+    }
+
+    .overlay {
+        display: none;
+    }
+
+    .overlay.show {
+        display: block;
+    }
+
+
+    /* لما القائمة تفتح نخفي الزر */
+    .hide-btn{
+        display:none;
+    }
+}
+
+.section{
+    display:none;
+}
+
+.active-section{
+    display:block;
+}
+
+.notification{
+    background:#f5f7fa;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+}
+
+.profile-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+@media (max-width: 900px){
+    #menuBtn{
+        z-index: 12000;
+    }
+}
+
+/* Popup Edit */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background: #fff;
+    width: 400px;
+    margin: 8% auto;
+    padding: 25px;
+    border-radius: 10px;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content h2 {
+    margin-bottom: 15px;
+}
+
+.modal .form-group {
+    margin-bottom: 12px;
+}
+
+.modal select {
+    width: 100%;
+    padding: 8px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-save {
+    background: #2196f3;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+}
+
+.btn-cancel {
+    background: #f44336;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+}
+
+@keyframes fadeIn {
+    from {opacity:0; transform:scale(0.9);}
+    to {opacity:1; transform:scale(1);}
+}
+
+/* 🔥 الشكل العام للـ status */
+.status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+/* ✅ Completed */
+.status.done {
+    background: linear-gradient(135deg, #28a745, #4cd964);
+    color: white;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* 🔥 Hover Effect */
+.status.done:hover {
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+/* Notifications */
+.notification {
+    padding: 12px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-weight: 500;
+}
+
+/* success */
+.notification.success {
+    background: #e6f9f0;
+    color: #28a745;
+}
+
+/* warning */
+.notification.warning {
+    background: #fff4e5;
+    color: #ff9800;
+}
+
+/* error */
+.notification.error {
+    background: #ffe6e6;
+    color: #e53935;
+}
+
+/* 🔔 Notification Box */
+.notification {
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+/* 🟢 Success */
+.notification.success {
+    background: #e6f9f0;
+    color: #1e7e34;
+    border-left: 4px solid #28a745;
+}
+
+@keyframes glow {
+    0% { background: #dbeafe; }
+    100% { background: inherit; }
+}
+
+.notification.unread {
+    animation: glow 0.5s ease;
+}
+
+/* 🔴 Error */
+.notification.error {
+    background: #fdecea;
+    color: #c82333;
+    border-left: 4px solid #dc3545;
+}
+
+/* 🟡 Warning */
+.notification.warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+/* 📭 Empty State */
+.empty {
+    text-align: center;
+    color: #999;
+    padding: 15px;
+    font-style: italic;
+}
+
+/* 🧠 Section Titles */
+#notifications h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #444;
+}
+
+/* Notification slider  */
+/* 🔽 Toggle Header */
+.toggle-header {
+    cursor: pointer;
+    user-select: none;
+    color: #333;
+    font-weight: bold;
+}
+
+/* 🔔 Section */
+/* 🔔 Section Smooth Animation */
+.notification-section {
+    max-height: 500px;      /* 👈 الحد الأقصى */
+    overflow-y: auto;       /* 👈 سكرول رأسي */
+    overflow-x: hidden;
+    transition: max-height 0.4s ease;
+    padding-right: 5px;     /* علشان السكرول */
+    scroll-behavior: smooth;
+}
+
+/* 🔽 الحالة المقفولة */
+.notification-section.closed {
+    max-height: 0;
+    overflow: hidden;
+}
+
+/* Scroll Style */
+.notification-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notification-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.notification-section::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 10px;
+}
+
+.notification-section::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+.badge {
+    background: #dc3545;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-left: 8px;
+    display: inline-block;
+}
+
+/* ✨ لو مفيش إشعارات نخفيه */
+.badge:empty {
+    display: none;
+}
+
+/* 🟡 Unread Notification */
+.notification.unread {
+    border: 2px solid #007bff;
+    background: #eef5ff;
+    font-weight: 500;
+    position: relative;
+}
+
+/* 🔴 نقطة صغيرة */
+.notification.unread::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: #007bff;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.notif-badge {
+    background: #ff3b3b;
+    color: white;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 50px;
+    margin-left: 8px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* لو مفيش إشعارات */
+.notif-badge.hidden {
+    display: none;
+}
+
+/* 🔥 شكل الـ input والـ select */
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 12px 40px 12px 12px;
+    border: 1.5px solid #dcdcdc;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+    background: #fff;
+}
+
+/* 🔥 focus */
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #00bcd4;
+    box-shadow: 0 0 5px rgba(0, 188, 212, 0.3);
+}
+
+/* 🔥 disabled */
+.input-group select:disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+
+/* 🔥 نخفي السهم الافتراضي */
+.input-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* 🔥 سهم custom */
+.input-group {
+    position: relative;
+}
+
+/* 🔥 زرار Edit */
+.edit-btn {
+    margin-left: 10px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #00bcd4;
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.edit-btn:hover {
+    background: #0097a7;
+}
+
+/* 🔥 لما يبقى Save */
+.edit-btn:active {
+    transform: scale(0.95);
+}
+
+#toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 14px 20px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+    transition: 0.4s ease;
+    z-index: 9999;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+#toast.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+#toast.success { background: linear-gradient(135deg, #4caf50, #2e7d32); }
+#toast.error   { background: linear-gradient(135deg, #f44336, #c62828); }
+#toast.warning { background: linear-gradient(135deg, #ff9800, #ef6c00); }
+
+.password-group {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.password-group input {
+    width: 100%;
+    padding: 12px 40px 12px 12px;
+}
+
+.password-group span {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 16px;
+    color: #888;
+}
+
+/* صوره المستخدم */
+.avatar-text {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #abe8ef, #083f6b);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.popup-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 300px;
+    text-align: center;
+}
+
+.popup-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-confirm {
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+}
+
+.btn-cancel {
+    background: #f44336;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+}
+
+.delete-noti {
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    float: right;
+    font-size: 14px;
+}
+
+.delete-noti:hover {
+    color: red;
+}
+
+.clear-btn {
+    margin-left: 10px;
+    font-size: 12px;
+    padding: 4px 8px;
+    border: none;
+    background: #f44336;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.popup-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 320px;
+    text-align: center;
+    animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+.popup-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-confirm {
+    background: #f44336;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background: #ccc;
+    color: #333;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* =========================
+   🔥 PRESCRIPTION VIEWER
+========================= */
+
+.popup-overlay{
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.55);
+
+    backdrop-filter: blur(4px);
+
+    display: none;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 99999;
+
+    padding: 20px;
+}
+
+/* =========================
+   🔥 BOX
+========================= */
+
+.prescription-box{
+
+    width: 900px;
+
+    max-width: 95%;
+
+    max-height: 92vh;
+
+    overflow-y: auto;
+
+    background: #fff;
+
+    border-radius: 24px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.25);
+
+    animation: popupFade 0.25s ease;
+}
+
+/* =========================
+   🔥 ANIMATION
+========================= */
+
+@keyframes popupFade{
+
+    from{
+        opacity:0;
+        transform:translateY(20px) scale(.97);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+/* =========================
+   🔥 TITLE
+========================= */
+
+.prescription-box h2{
+
+    margin:0 0 20px;
+
+    font-size:32px;
+
+    color:#1e3a8a;
+
+    font-weight:700;
+
+    border-bottom:2px solid #eef2ff;
+
+    padding-bottom:15px;
+}
+
+/* =========================
+   🔥 TEXT
+========================= */
+
+#prescriptionText{
+
+    background:#f8fafc;
+
+    border:1px solid #e2e8f0;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    white-space:pre-wrap;
+
+    font-size:17px;
+
+    line-height:1.8;
+
+    color:#334155;
+
+    margin-bottom:25px;
+}
+
+/* =========================
+   🔥 FILE BOX
+========================= */
+
+#prescriptionFileBox{
+
+    margin-top:20px;
+}
+
+/* =========================
+   🖼 IMAGE
+========================= */
+
+#prescriptionFileBox img{
+
+    width:100%;
+
+    max-height:550px;
+
+    object-fit:contain;
+
+    border-radius:20px;
+
+    border:1px solid #ddd;
+
+    background:#fff;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.12);
+}
+
+/* =========================
+   📄 PDF
+========================= */
+
+#prescriptionFileBox iframe{
+
+    width:100%;
+
+    height:600px;
+
+    border:none;
+
+    border-radius:20px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.12);
+}
+
+/* =========================
+   🔥 BUTTONS
+========================= */
+
+.popup-actions{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    margin-top:25px;
+
+    gap:15px;
+}
+
+/* =========================
+   🔽 DOWNLOAD
+========================= */
+
+.download-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin-top:18px;
+
+    padding:14px 22px;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1e3a8a,
+            #0ea5e9
+        );
+
+    color:#fff;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    font-size:15px;
+
+    transition:.25s;
+}
+
+.download-btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(14,165,233,.35);
+}
+
+/* =========================
+   ❌ CLOSE BUTTON
+========================= */
+
+.btn-no{
+
+    padding:12px 22px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#ef4444;
+
+    color:#fff;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.btn-no:hover{
+
+    background:#dc2626;
+
+    transform:translateY(-2px);
+}
+
+/* =========================
+   📱 MOBILE
+========================= */
+
+@media(max-width:768px){
+
+    .prescription-box{
+
+        padding:20px;
+    }
+
+    .prescription-box h2{
+
+        font-size:24px;
+    }
+
+    #prescriptionText{
+
+        font-size:15px;
+    }
+
+    #prescriptionFileBox iframe{
+
+        height:400px;
+    }
+}
+
+.status.cancelled{
+
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.status.cancelled{
+
+    background:#fee2e2;
+    color:#dc2626;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔵 SIDEBAR -->
+<div class="sidebar" id="sidebar">
+
+    <h2 class="logo"style="font-size: 18px;">🪪 Smart Care Clinic</h2>
+
+    <ul class="menu">
+
+    <li class="active" onclick="showSection('appointment', this)">
+        <i class="fa fa-calendar-check"></i> Take Appointment
+    </li>
+
+    <li onclick="showSection('history', this)">
+        <i class="fa fa-history"></i> Patient History
+    </li>
+
+    <li onclick="showSection('notifications', this)">
+        <i class="fa fa-bell"></i> Notifications
+        <span id="notifCount" class="notif-badge">0</span>
+    </li>
+
+    <li onclick="showSection('profile', this)">
+        <i class="fa fa-user-cog"></i> Profile Setting
+    </li>
+
+    <li onclick="logout()" class="logout">
+        <i  class="fa fa-sign-out-alt"></i> Logout
+    </li>
+
+</ul>
+</div>
+<div class="overlay" id="overlay"></div>
+
+<!-- 🔵 MAIN -->
+<div class="main" id="main">
+
+    <!-- 🔵 NAVBAR -->
+    <div class="navbar">
+
+        <div class="left">
+            <i class="fa fa-bars" id="menuBtn"></i>
+        </div>
+
+        <div class="right">
+
+            <!-- Language -->
+            <button id="langBtn" class="lang-btn">AR</button>
+
+            <!-- Username -->
+            <span id="username" class="nav-username"></span>
+
+            <!-- Profile -->
+            <div class="profile">
+                <div id="userAvatar" class="avatar-text"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 🔵 CONTENT -->
+<div class="content">
+
+    <!-- 🔵 1. Take Appointment -->
+    <div id="appointment" class="section active-section">
+
+        <!-- 🔥 Form -->
+        <div class="card">
+
+            <h2 class="card-title">Book Appointment</h2>
+
+            <form class="appointment-form">
+
+                <div class="form-group">
+                    <label>Specialty</label>
+                    <select id="specialtySelect">
+                        <option disabled selected>Select Specialty</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Doctor</label>
+                    <select id="doctorSelect">
+                        <option disabled selected>Select Doctor</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <select id="daySelect">
+                        <option disabled selected>Select Day</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <select id="timeSelect">
+                        <option disabled selected>Select Time</option>
+                    </select>
+                </div>
+
+                <button class="btn-book">Confirm Booking</button>
+
+            </form>
+
+        </div>
+
+        <!-- 🔥 Current Bookings -->
+        <div class="card">
+
+            <h2 class="card-title">My Appointments</h2>
+
+            <table class="booking-table">
+
+                <thead>
+                    <tr>
+                        <th>Specialty</th>
+                        <th>Doctor</th>
+                        <th>Day</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td data-label="Specialty">Dental</td>
+                        <td data-label="Doctor">Dr. Ahmed</td>
+                        <td data-label="Day">2026-05-10</td>
+                        <td data-label="Time">10:00 AM</td>
+                        <td data-label="Status">
+                            <span class="status active">Confirmed</span>
+                        </td>
+                        <td data-label="Action">
+                            <button class="btn-edit">Edit</button>
+                            <button class="btn-cancel">Cancel</button>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- 🟡 2. Patient History -->
+    <div id="history" class="section">
+
+        <div class="card">
+
+            <h2 class="card-title">Patient History</h2>
+
+            <table class="booking-table">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Specialty</th>
+                        <th>Doctor</th>
+                        <th>Day</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>1</td>
+                        <td>Dental</td>
+                        <td>Dr. Ahmed</td>
+                        <td>2026-04-01</td>
+                        <td>09:00 AM</td>
+                        <td>
+                            <span class='status${ item.Status === "Canceled" ? "cancelled": "done" }'>
+        ${item.Status}
+    </span>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!--  3. Notifications -->
+    <div id="notifications" class="section">
+
+        <div class="card">
+
+            <h2 class="card-title">Notifications🔔 </h2>
+
+            <!-- 🟢 System Notifications -->
+            <h3 class="toggle-header" onclick="toggleSection('systemNotifications')">
+                ▶ System Notifications <span id="systemCount" class="badge">0</span>
+                <button onclick="openDeleteAllPopup('system')" class="clear-btn">Clear All</button>
+            </h3>
+            <div id="systemNotifications" class="notification-section closed"></div>
+            
+            <h3 class="toggle-header" onclick="toggleSection('doctorNotifications')">
+                ▶ Doctor Notifications <span id="doctorCount" class="badge">0</span>
+                <button onclick="openDeleteAllPopup('doctor')" class="clear-btn">Clear All</button>
+            </h3>
+            <div id="doctorNotifications" class="notification-section closed"></div>
+
+        </div>
+
+    </div>
+
+    <!-- 👤 4. Profile -->
+    <div id="profile" class="section">
+
+        <div class="card">
+
+            <h2 class="card-title">Profile Info</h2>
+
+            <div class="profile-grid">
+
+                <div class="input-group">
+                    <input id="name"  placeholder="Name" readonly>
+                    <button class="edit-btn" onclick="enableEdit('name', this)">Edit</button>
+                </div>
+
+                <div class="input-group">
+                    <input id="email"  placeholder="Email" readonly>
+                    <button class="edit-btn" onclick="enableEdit('email', this)">Edit</button>
+                </div>
+
+                <div class="input-group">
+                    <input id="phone"  placeholder="Phone" readonly>
+                    <button class="edit-btn" onclick="enableEdit('phone', this)">Edit</button>
+                </div>
+
+                <div class="input-group">
+                    <select id="gender" disabled>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+
+                    <button class="edit-btn" onclick="enableEdit('gender', this)">Edit</button>
+                </div>
+
+            </div>
+
+        </div>
+
+        
+        <div class="card">
+            <h2 class="card-title">Change Password</h2>
+            
+            <div class="password-group">
+                <input id="oldPassword" type="password" placeholder="Old Password">
+                <span onclick="togglePassword('oldPassword', this)">👁</span>
+            </div>
+
+            <div class="password-group">
+                <input id="newPassword" type="password" placeholder="New Password">
+                <span onclick="togglePassword('newPassword', this)">👁</span>
+            </div>
+
+            <div class="password-group">
+                <input id="confirmPassword" type="password" placeholder="Confirm Password">
+                <span onclick="togglePassword('confirmPassword', this)">👁</span>
+            </div>
+            
+            <button class="btn-book" onclick="changePassword()">Change Password</button>
+            
+        </div>
+        
+
+    </div>
+
+</div>
+<!-- 🔥 EDIT MODAL -->
+<div id="editModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2>Edit Appointment</h2>
+
+        <input type="hidden" id="editBookingId">
+
+        <div class="form-group">
+            <label>Specialty</label>
+            <select id="editSpecialty"></select>
+        </div>
+
+        <div class="form-group">
+            <label>Doctor</label>
+            <select id="editDoctor"></select>
+        </div>
+
+        <div class="form-group">
+            <label>Day</label>
+            <select id="editDay"></select>
+        </div>
+
+        <div class="form-group">
+            <label>Time</label>
+            <select id="editTime"></select>
+        </div>
+
+        <div class="modal-actions">
+            <button onclick="saveEdit()" class="btn-save">Save</button>
+            <button onclick="closeEdit()" class="btn-cancel">Cancel</button>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="toast"></div>
+
+<div id="confirmPopup" class="popup">
+    <div class="popup-content">
+        <h3>Confirm Update</h3>
+        <p id="popupText"></p>
+
+        <div class="popup-actions">
+            <button onclick="confirmUpdate()" class="btn-confirm">Yes</button>
+            <button onclick="closePopup()" class="btn-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+<div id="deletePopup" class="popup">
+    <div class="popup-content">
+        <h3>⚠️ Confirm Delete</h3>
+        <p id="deleteText">Are you sure you want to delete this notification?</p>
+
+        <div class="popup-actions">
+            <button onclick="confirmDelete()" class="btn-confirm">Yes</button>
+            <button onclick="closeDeletePopup()" class="btn-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- =========================
+     🔥 PRESCRIPTION VIEWER
+========================= -->
+
+<div id="prescriptionViewer" class="popup-overlay">
+
+    <div class="popup-box prescription-box">
+
+        <h2>Prescription</h2>
+
+        <pre id="prescriptionText"></pre>
+
+        <div id="prescriptionFileBox"></div>
+
+        <div class="popup-actions">
+
+            <button
+                class="btn-no"
+                onclick="closePrescriptionView()"
+            >
+                Close
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+    // SIDEBAR
+const menuBtn = document.getElementById("menuBtn");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
+// 🔥 فتح القائمة
+menuBtn.onclick = () => {
+
+    sidebar.classList.add("active");
+    overlay.classList.add("active");
+
+    // اخفاء الزر
+    menuBtn.classList.add("hide-btn");
+};
+
+// 🔥 قفل القائمة لما تدوس بره
+overlay.onclick = () => {
+
+    sidebar.classList.remove("active");
+    overlay.classList.remove("active");
+
+    // رجوع الزر
+    menuBtn.classList.remove("hide-btn");
+};
+
+menuBtn.onclick = () => {
+    sidebar.classList.toggle("hide");
+    sidebar.classList.toggle("show");
+    main.classList.toggle("full");
+};
+
+
+
+function showSection(sectionId, el){
+
+    document.querySelectorAll('.section').forEach(sec=>{
+        sec.classList.remove('active-section');
+    });
+
+    document.getElementById(sectionId).classList.add('active-section');
+
+    document.querySelectorAll('.menu li').forEach(li=>{
+        li.classList.remove('active');
+    });
+
+    el.classList.add('active');
+
+    // 🔥 حفظ الصفحة
+    localStorage.setItem("activeSection", sectionId);
+}
+
+// لما الصفحة تفتح
+window.onload = () => {
+
+    let saved = localStorage.getItem("activeSection");
+
+    // 🔥 اخفي كل السكاشن
+    document.querySelectorAll('.section').forEach(sec=>{
+        sec.classList.remove('active-section');
+    });
+
+    // 🔥 شيل active من المينيو
+    document.querySelectorAll('.menu li').forEach(li=>{
+        li.classList.remove('active');
+    });
+
+    if(saved){
+
+        let section = document.getElementById(saved);
+
+        if(section){
+            section.classList.add('active-section');
+        }else{
+            document.getElementById("appointment").classList.add("active-section");
+            saved = "appointment";
+        }
+
+    }else{
+        document.getElementById("appointment").classList.add("active-section");
+        saved = "appointment";
+    }
+
+    // 🔥 هنا الحل المهم
+    let activeMenu = document.querySelector(`.menu li[onclick*="${saved}"]`);
+
+    if(activeMenu){
+        activeMenu.classList.add("active");
+    }
+
+};
+
+// 🔥 الترجمة
+const translations = {
+
+    en: {
+        take: "Take Appointment",
+        history: "Patient History",
+        notifications: "Notifications",
+        profile: "Profile Setting",
+        logout: "Logout",
+
+        book: "Book Appointment",
+        specialty: "Specialty",
+        doctor: "Doctor",
+        day: "Day",
+        time: "Time",
+        confirm: "Confirm Booking",
+
+        myAppointments: "My Appointments",
+
+        historyTitle: "Patient History",
+
+        notificationsTitle: "Notifications",
+        note1: "Your appointment is tomorrow",
+        note2: "Booking confirmed successfully",
+
+        profileTitle: "Profile Info",
+        changePass: "Change Password",
+
+        selectDoctor: "Select Doctor",
+        selectSpecialty: "Select Specialty",
+
+        table_action: "Action",
+        table_status: "Status",
+        table_time: "Time",
+        table_day: "Day",
+        table_doctor: "Doctor",
+        table_specialty: "Specialty",
+        name: "Name",
+        email: "Email",
+        phone: "Phone",
+        gender: "Gender",
+        edit: "Edit",
+
+        oldPass: "Old Password",
+        newPass: "New Password",
+        confirmPass: "Confirm Password",
+        table_index: "#",
+        completed: "Completed",
+        selectDay: "Select Day",
+        selectTime: "Select Time",
+        male: "Male",
+        female: "Female",
+        details: "Details",
+        view: "View Prescription",
+    },
+
+    ar: {
+        take: "حجز موعد",
+        history: "سجل المرضى",
+        notifications: "الإشعارات",
+        profile: "إعدادات الحساب",
+        logout: "تسجيل الخروج",
+
+        book: "حجز موعد",
+        specialty: "التخصص",
+        doctor: "الدكتور",
+        day: "اليوم",
+        time: "الوقت",
+        confirm: "تأكيد الحجز",
+
+        myAppointments: "مواعيدي",
+
+        historyTitle: "سجل المرضى",
+
+        notificationsTitle: "الإشعارات",
+        note1: "موعدك غدًا",
+        note2: "تم تأكيد الحجز",
+
+        profileTitle: "بيانات الحساب",
+        changePass: "تغيير كلمة المرور",
+
+        selectDoctor: "اختر الطبيب",
+        selectSpecialty: "اختر التخصص",
+
+        table_action: "الإجراء",
+        table_status: "الحالة",
+        table_time: "الوقت",
+        table_day: "اليوم",
+        table_doctor: "الدكتور",
+        table_specialty: "التخصص",
+        name: "الاسم",
+        email: "البريد الإلكتروني",
+        phone: "رقم الهاتف",
+        gender: "النوع",
+        edit: "تعديل",
+
+        oldPass: "كلمة المرور القديمة",
+        newPass: "كلمة المرور الجديدة",
+        confirmPass: "تأكيد كلمة المرور",
+        table_index: "رقم",
+        completed: "مكتمل",
+        selectDay: "اختر اليوم",
+        selectTime: "اختر الوقت",
+        male: "ذكر",
+        female: "أنثى",
+        details: "التفاصيل",
+        view: "عرض الروشتة",
+
+    }
+};
+
+// =========================
+// 🌍 LANGUAGE SYSTEM
+// =========================
+
+let currentLang =
+    localStorage.getItem("lang")
+    || "en";
+
+// =========================
+// 🔥 APPLY LANGUAGE
+// =========================
+function applyLanguage(){
+
+    const t = translations[currentLang];
+
+    // =========================
+    // 🔥 اتجاه الصفحة
+    // =========================
+    document.body.dir =
+        currentLang === "ar"
+        ? "rtl"
+        : "ltr";
+
+    // =========================
+    // 🔥 زرار اللغة
+    // =========================
+    document.getElementById(
+        "langBtn"
+    ).innerText =
+        currentLang === "en"
+        ? "AR"
+        : "EN";
+
+    // =========================
+    // 🔥 SIDEBAR
+    // =========================
+    const menu =
+        document.querySelectorAll(".menu li");
+
+    menu[0].innerHTML =
+        '<i class="fa fa-calendar-check"></i> '
+        + t.take;
+
+    menu[1].innerHTML =
+        '<i class="fa fa-history"></i> '
+        + t.history;
+
+    menu[2].innerHTML =
+        '<i class="fa fa-bell"></i> '
+        + t.notifications +
+        ` <span id="notifCount" class="notif-badge">
+            ${document.getElementById("notifCount")?.innerText || 0}
+          </span>`;
+
+    menu[3].innerHTML =
+        '<i class="fa fa-user-cog"></i> '
+        + t.profile;
+
+    menu[4].innerHTML =
+        '<i class="fa fa-sign-out-alt"></i> '
+        + t.logout;
+
+    // =========================
+    // 🔥 TITLES
+    // =========================
+    document.querySelectorAll(".card-title")[0].innerText = t.book;
+    document.querySelectorAll(".card-title")[1].innerText = t.myAppointments;
+
+    document.querySelector("#history .card-title").innerText =
+        t.historyTitle;
+
+    document.querySelector("#notifications .card-title").innerText =
+        t.notificationsTitle + " 🔔";
+
+    document.querySelectorAll("#profile .card-title")[0].innerText =
+        t.profileTitle;
+
+    document.querySelectorAll("#profile .card-title")[1].innerText =
+        t.changePass;
+
+    // =========================
+    // 🔥 LABELS
+    // =========================
+    const labels =
+        document.querySelectorAll(".appointment-form label");
+
+    if(labels[0]) labels[0].innerText = t.specialty;
+    if(labels[1]) labels[1].innerText = t.doctor;
+
+    // =========================
+    // 🔥 SELECT PLACEHOLDERS
+    // =========================
+    if(document.getElementById("specialtySelect").options[0]){
+        document.getElementById("specialtySelect")
+        .options[0].text =
+        t.selectSpecialty;
+    }
+
+    if(document.getElementById("doctorSelect").options[0]){
+        document.getElementById("doctorSelect")
+        .options[0].text =
+        t.selectDoctor;
+    }
+
+    if(document.getElementById("daySelect").options[0]){
+        document.getElementById("daySelect")
+        .options[0].text =
+        currentLang === "ar"
+        ? "اختر اليوم"
+        : "Select Day";
+    }
+
+    if(document.getElementById("timeSelect").options[0]){
+        document.getElementById("timeSelect")
+        .options[0].text =
+        currentLang === "ar"
+        ? "اختر الوقت"
+        : "Select Time";
+    }
+
+    // =========================
+    // 🔥 BUTTONS
+    // =========================
+    const btnBooks =
+        document.querySelectorAll(".btn-book");
+
+    if(btnBooks[0]){
+        btnBooks[0].innerText = t.confirm;
+    }
+
+    if(btnBooks[1]){
+        btnBooks[1].innerText = t.changePass;
+    }
+
+    // =========================
+    // 🔥 TABLE HEADERS
+    // =========================
+    const th =
+        document.querySelectorAll(
+            "#appointment th"
+        );
+
+    if(th.length >= 6){
+
+        th[0].innerText = t.table_specialty;
+        th[1].innerText = t.table_doctor;
+        th[2].innerText = t.table_day;
+        th[3].innerText = t.table_time;
+        th[4].innerText = t.table_status;
+        th[5].innerText = t.table_action;
+    }
+
+    // =========================
+    // 🔥 HISTORY TABLE
+    // =========================
+    const historyTH =
+        document.querySelectorAll(
+            "#history th"
+        );
+
+    if(historyTH.length >= 6){
+
+        historyTH[0].innerText = t.table_index;
+        historyTH[1].innerText = t.table_specialty;
+        historyTH[2].innerText = t.table_doctor;
+        historyTH[3].innerText = t.table_day;
+        historyTH[4].innerText = t.table_time;
+        historyTH[5].innerText = t.table_status;
+    }
+
+    // =========================
+    // 🔥 PROFILE PLACEHOLDERS
+    // =========================
+    document.getElementById("name").placeholder =
+        t.name;
+
+    document.getElementById("email").placeholder =
+        t.email;
+
+    document.getElementById("phone").placeholder =
+        t.phone;
+
+    // =========================
+    // 🔥 GENDER OPTIONS
+    // =========================
+    const gender =
+        document.getElementById("gender");
+
+    if(gender){
+
+        gender.options[0].text =
+            currentLang === "ar"
+            ? "ذكر"
+            : "Male";
+
+        gender.options[1].text =
+            currentLang === "ar"
+            ? "أنثى"
+            : "Female";
+    }
+
+    // =========================
+    // 🔥 EDIT BUTTONS
+    // =========================
+    document.querySelectorAll(".edit-btn")
+    .forEach(btn=>{
+
+        btn.innerText = t.edit;
+    });
+
+    // =========================
+    // 🔥 PASSWORD PLACEHOLDERS
+    // =========================
+    document.getElementById("oldPassword")
+    .placeholder = t.oldPass;
+
+    document.getElementById("newPassword")
+    .placeholder = t.newPass;
+
+    document.getElementById("confirmPassword")
+    .placeholder = t.confirmPass;
+
+    // =========================
+    // 🔥 STATUS
+    // =========================
+    document.querySelectorAll(".status.done")
+    .forEach(el=>{
+
+        el.innerText = t.completed;
+    });
+
+    // =========================
+    // 🔥 NOTIFICATION TITLES
+    // =========================
+    const headers =
+        document.querySelectorAll(
+            ".toggle-header"
+        );
+
+    if(headers[0]){
+
+        headers[0].childNodes[0].textContent =
+            currentLang === "ar"
+            ? "▶ إشعارات النظام "
+            : "▶ System Notifications ";
+    }
+
+    if(headers[1]){
+
+        headers[1].childNodes[0].textContent =
+            currentLang === "ar"
+            ? "▶ إشعارات الأطباء "
+            : "▶ Doctor Notifications ";
+    }
+
+    // =========================
+    // 🔥 CLEAR BUTTONS
+    // =========================
+    document.querySelectorAll(".clear-btn")
+    .forEach(btn=>{
+
+        btn.innerText =
+            currentLang === "ar"
+            ? "حذف الكل"
+            : "Clear All";
+    });
+
+    // =========================
+    // 🔥 SAVE LANGUAGE
+    // =========================
+    localStorage.setItem(
+        "lang",
+        currentLang
+    );
+}
+
+// =========================
+// 🔥 TOGGLE LANGUAGE
+// =========================
+document.getElementById(
+    "langBtn"
+).onclick = function(){
+
+    currentLang =
+        currentLang === "en"
+        ? "ar"
+        : "en";
+
+    applyLanguage();
+    loadNotifications();
+};
+
+// =========================
+// 🔥 FIRST LOAD
+// =========================
+window.addEventListener(
+    "DOMContentLoaded",
+    ()=>{
+
+        applyLanguage();
+    }
+);
+
+/* 🔥 AUTH CHECK */
+const authUser = JSON.parse(localStorage.getItem("authUser"));
+
+if(!authUser){
+    window.location.replace("../Login_page.html");
+}else{
+    document.getElementById("username").innerText = authUser.name;
+}
+
+
+/* 🔥 منع الرجوع بالباك */
+window.history.pushState(null, null, window.location.href);
+
+window.onpopstate = function () {
+
+    const authUser = localStorage.getItem("authUser");
+
+    if(!authUser){
+        window.location.replace("../Login_page.html");
+    }else{
+        window.history.pushState(null, null, window.location.href);
+    }
+
+};
+
+
+/* 🔥 LOGOUT */
+function logout(){
+    localStorage.removeItem("authUser");
+    window.location.replace("../Login_page.html");
+}
+
+// =========================
+// 🔥 INIT
+// =========================
+window.addEventListener("DOMContentLoaded", function(){
+    loadPatientHistory();
+    loadMyAppointments();
+    loadSpecialties();
+    loadNotifications();
+    loadProfile();
+    loadUserAvatar();
+    checkReminders();
+
+    document.getElementById("specialtySelect").onchange = loadDoctors;
+    document.getElementById("doctorSelect").onchange = loadDays;
+    document.getElementById("daySelect").onchange = loadTimes;
+
+    document.querySelector(".appointment-form").onsubmit = bookAppointment;
+
+});
+
+
+// =========================
+// 🟢 تحميل التخصصات
+// =========================
+function loadSpecialties(){
+
+    fetch("get_specialties.php")
+    .then(res=>res.json())
+    .then(data=>{
+
+        let select = document.getElementById("specialtySelect");
+        select.innerHTML = '<option disabled selected>Select Specialty</option>';
+
+        data.forEach(s=>{
+            select.innerHTML += `<option value="${s.Specialty_ID}">${s.Name}</option>`;
+        });
+
+    });
+}
+
+
+// =========================
+// 🟢 تحميل الدكاترة
+// =========================
+function loadDoctors(){
+
+    let id = document.getElementById("specialtySelect").value;
+
+    if(!id) return;
+
+    fetch("get_doctors.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({specialty_id:id})
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        let doctorSelect = document.getElementById("doctorSelect");
+        doctorSelect.innerHTML = '<option disabled selected>Select Doctor</option>';
+
+        data.forEach(d=>{
+            doctorSelect.innerHTML += `<option value="${d.Doctor_ID}">${d.Name}</option>`;
+        });
+
+    });
+}
+
+
+// =========================
+// 🟢 تحميل الأيام
+// =========================
+async function loadDays(){
+
+    let doctor_id = document.getElementById("doctorSelect").value;
+    if(!doctor_id) return;
+
+    let daySelect = document.getElementById("daySelect");
+    daySelect.innerHTML = '<option disabled selected>Select Day</option>';
+
+    try{
+
+        let res = await fetch("get_available_days.php",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({doctor_id})
+        });
+
+        let data = await res.json();
+
+        for(let d of data){
+
+            let date = getNextDate(d.Work_Day);
+
+            let tries = 0;
+
+            while(true){
+
+                if(tries > 10){
+                    console.log("No valid day found");
+                    break;
+                }
+
+                tries++;
+
+                let res2 = await fetch("get_available_times.php",{
+                    method:"POST",
+                    headers:{"Content-Type":"application/json"},
+                    body: JSON.stringify({ doctor_id, date })
+                });
+
+                let text = await res2.text();
+
+                let times;
+                try{
+                    times = JSON.parse(text);
+                }catch(e){
+                    console.error("INVALID JSON:", text);
+                    break;
+                }
+
+                // لو السيرفر رجع حاجة غلط
+                if(!Array.isArray(times)){
+                    console.log("Invalid times data");
+                    break;
+                }
+
+                let today = new Date();
+                let selectedDate = new Date(date);
+
+                // 🟢 لو نفس اليوم → فلتر
+                let validTimes;
+
+                if(selectedDate.toDateString() === today.toDateString()){
+
+                    validTimes = times.filter(t=>{
+                        let [h,m] = t.split(":");
+
+                        let slot = new Date(date);
+                        slot.setHours(h,m,0,0);
+
+                        return slot > today;
+                    });
+
+                }else{
+                    // 🟢 يوم في المستقبل → كل الأوقات valid
+                    validTimes = times;
+                }
+
+                if(validTimes.length > 0){
+                    break; // ✔ اليوم صالح
+                }
+
+                // ❌ اليوم خلص → الأسبوع اللي بعده
+                let next = new Date(date);
+                next.setDate(next.getDate() + 7);
+                date = next.toISOString().split("T")[0];
+            }
+
+            // ✅ ضيف اليوم
+            daySelect.innerHTML += `
+                <option value="${date}">
+                    ${d.Work_Day} (${date})
+                </option>
+            `;
+        }
+
+    }catch(err){
+        console.log("LOAD DAYS ERROR:", err);
+    }
+}
+
+
+// =========================
+// 🟢 حساب التاريخ
+// =========================
+function getNextDate(dayName){
+
+    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    let today = new Date();
+
+    let target = days.indexOf(dayName);
+
+    let diff = (target - today.getDay() + 7) % 7;
+
+    // 🔥 لو نفس اليوم
+    if(diff === 0){
+
+        let currentHour = today.getHours();
+
+        // ⛔ لو الساعة عدت 6 مساء (تقدر تغيرها)
+        if(currentHour >= 18){
+            diff = 7; // يروح للأسبوع اللي بعده
+        }
+    }
+
+    let next = new Date();
+    next.setDate(today.getDate() + diff);
+
+    let year = next.getFullYear();
+    let month = String(next.getMonth() + 1).padStart(2, '0');
+    let day = String(next.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
+
+// =========================
+// 🟢 تحميل الأوقات (FINAL FIX)
+// =========================
+function loadTimes(){
+
+    let date = document.getElementById("daySelect").value;
+    let doctor_id = document.getElementById("doctorSelect").value;
+
+    console.log("DATE:", date);
+    console.log("DOCTOR:", doctor_id);
+
+    if(!date || !doctor_id){
+        console.log("Missing values");
+        return;
+    }
+
+    fetch("get_available_times.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            doctor_id: doctor_id,
+            date: date
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        console.log("Times:", data);
+
+        let timeSelect = document.getElementById("timeSelect");
+        timeSelect.innerHTML = '<option disabled selected>Select Time</option>';
+
+        // 🔥 لو السيرفر رجع الأسبوع اللي بعده
+        if(data.next_week){
+
+        let daySelect = document.getElementById("daySelect");
+
+        // 🧠 نجيب اسم اليوم القديم
+        let selectedText = daySelect.options[daySelect.selectedIndex].text;
+        let dayName = selectedText.split(" ")[0]; // Sunday
+
+        //  نغير الاختيار بالكامل
+        // 🧹 امسح كل القديم
+        daySelect.innerHTML = "";
+
+        // ✅ ضيف اليوم الجديد بس
+        let option = document.createElement("option");
+        option.value = data.next_date;
+        option.textContent = `${dayName} (${data.next_date})`;
+        option.selected = true;
+
+        daySelect.appendChild(option);
+
+        // 🔥 نعيد تحميل الأوقات تلقائي
+        setTimeout(() => {
+            loadTimes();
+        }, 100);
+
+        return;
+    }
+
+        // 🔥 لو مفيش أوقات
+        if(!data || data.length === 0){
+            timeSelect.innerHTML = '<option>No Available Time</option>';
+            return;
+        }
+
+        // 🔥 عرض الأوقات مباشرة (بدون تقسيم)
+        let now = new Date();
+        let selectedDate = new Date(date);
+
+        data.forEach(t=>{
+
+            let [h,m] = t.split(":");
+
+            let slot = new Date(date);
+            slot.setHours(h,m,0,0);
+
+            // فلترة بس لو نفس اليوم
+            if(selectedDate.toDateString() === now.toDateString()){
+                if(slot <= now) return;
+            }
+
+            timeSelect.innerHTML += `<option value="${t}">${t}</option>`;
+        });
+
+// =========================
+// 🔥 لو كل الأوقات خلصت
+// =========================
+if(timeSelect.options.length <= 1){
+
+    console.log("All times passed → move to next week");
+
+    fetch("get_available_times.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            doctor_id: doctor_id,
+            date: date
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        if(data.next_week){
+
+            let daySelect = document.getElementById("daySelect");
+
+            let selectedText = daySelect.options[daySelect.selectedIndex].text;
+            let dayName = selectedText.split(" ")[0];
+
+            let currentDate = new Date(date);
+            currentDate.setDate(currentDate.getDate() + 7);
+
+            let year = currentDate.getFullYear();
+            let month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            let day = String(currentDate.getDate()).padStart(2, '0');
+
+            let nextDate = `${year}-${month}-${day}`;
+
+            // 🔥 بدل ما تمسح كله
+            daySelect.value = nextDate;
+
+            // 🔁 لو مش موجود ضيفه
+            if(![...daySelect.options].some(o => o.value === nextDate)){
+                let option = document.createElement("option");
+                option.value = nextDate;
+                option.textContent = `${dayName} (${nextDate})`;
+                daySelect.appendChild(option);
+            }
+
+            // 🔁 إعادة تحميل الأوقات
+            loadTimes();
+        }
+
+    });
+
+}
+    })
+    .catch(err=>{
+        console.log("ERROR:", err);
+    });
+}
+
+
+// =========================
+// 🟢 الحجز
+// =========================
+function bookAppointment(e){
+
+    e.preventDefault();
+
+    const user = JSON.parse(localStorage.getItem("authUser"));
+    if(!user){
+        showToast("Login first", "error");
+        return;
+    }
+
+    let doctor_id = document.getElementById("doctorSelect").value;
+    let date      = document.getElementById("daySelect").value;
+    let time      = document.getElementById("timeSelect").value;
+
+    // 🔥 تنظيف القيم
+    doctor_id = doctor_id?.trim();
+    date      = date?.trim();
+    time      = time?.trim();
+
+    // 🔴 VALIDATION أقوى
+    if(!doctor_id || doctor_id === "Select Doctor"){
+        showToast("Please select doctor", "error");
+        return;
+    }
+
+    if(!date || date === "Select Day"){
+        showToast("Please select day", "error");
+        return;
+    }
+
+    if(!time || time === "Select Time"){
+        showToast("Please select time", "error");
+        return;
+    }
+
+    // 🔥 منع الضغط المتكرر
+    let btn = document.querySelector(".btn-book");
+    btn.disabled = true;
+    btn.innerText = "Booking...";
+
+    fetch("book_appointment.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            patient_id: user.id,
+            doctor_id: doctor_id,
+            date: date,
+            time: time
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        console.log("SERVER:", data);
+
+        if(data.status === "success"){
+
+            showToast("Booked Successfully ✅","success");
+            reloadPage();
+            loadTimes();
+            loadMyAppointments();
+            loadNotifications();
+
+        }else{
+            showToast(data.message || "Error","error");
+        }
+
+    })
+    .catch(err=>{
+        console.log("ERROR:", err);
+        showToast("Server Error","error");
+    })
+    .finally(()=>{
+        btn.disabled = false;
+        btn.innerText = "Confirm Booking";
+    });
+
+}
+
+//عرض الحجز الحالي في MyAppointments
+function loadMyAppointments(){
+
+    const user = JSON.parse(localStorage.getItem("authUser"));
+    if(!user) return;
+
+    fetch("get_my_appointments.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({patient_id: user.id})
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        let tbody = document.querySelector(".booking-table tbody");
+        tbody.innerHTML = "";
+
+        if(!data || data.length === 0){
+            tbody.innerHTML = `<tr><td colspan="6">No Appointments</td></tr>`;
+            return;
+        }
+
+        data.forEach(item=>{
+
+            if(
+                item.Status === "Completed"
+                ||
+                item.Status === "Canceled"
+            ) return;
+
+            let date = new Date(item.Booking_Date);
+
+            let year = date.getFullYear();
+            let month = String(date.getMonth() + 1).padStart(2, '0');
+            let dayNum = String(date.getDate()).padStart(2, '0');
+
+            let day = `${year}-${month}-${dayNum}`;
+            let time = date.toTimeString().slice(0,5);
+
+            let row = `
+                <tr>
+                    <td>${item.specialty_name}</td>
+                    <td>${item.doctor_name}</td>
+                    <td>${day}</td>
+                    <td>${time}</td>
+                    <td><span class="status active">${item.Status}</span></td>
+                    <td>
+                        <button onclick="openEdit(${item.Booking_ID})" class="btn-edit">Edit</button>
+                        <button onclick="deleteBooking(${item.Booking_ID})" class="btn-cancel">Canceled</button>
+                    </td>
+                </tr>
+            `;
+
+            tbody.innerHTML += row;
+        });
+
+    });
+}
+
+//Edit PopUp
+function openEdit(id){
+
+    document.getElementById("editModal").style.display = "block";
+    document.getElementById("editBookingId").value = id;
+
+    loadEditData(id); // هنبنيها بعد شوية
+}
+
+function closeEdit(){
+    document.getElementById("editModal").style.display = "none";
+}
+
+
+function loadEditData(id){
+
+    fetch("get_booking_details.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({booking_id:id})
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        console.log("EDIT DATA:", data);
+
+        let date = data.Booking_Date.split(" ")[0];
+        let time = data.Booking_Date.split(" ")[1].substring(0,5);
+
+        // خزّن ID
+        document.getElementById("editBookingId").value = data.Booking_ID;
+
+        // =========================
+        // 🔥 1. تحميل التخصصات
+        // =========================
+        fetch("get_specialties.php")
+        .then(res=>res.json())
+        .then(specs=>{
+
+            let sp = document.getElementById("editSpecialty");
+            sp.innerHTML = "";
+
+            specs.forEach(s=>{
+                let selected = (s.Specialty_ID == data.Specialty_ID) ? "selected" : "";
+                sp.innerHTML += `<option value="${s.Specialty_ID}" ${selected}>${s.Name}</option>`;
+            });
+
+            // =========================
+            // 🔥 2. تحميل الدكاترة
+            // =========================
+            loadEditDoctors(data.Specialty_ID, data.Doctor_ID, date, time);
+
+        });
+
+    });
+
+}
+
+function loadEditDoctors(specId, doctorId, date, time){
+
+    fetch("get_doctors.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({specialty_id: specId})
+    })
+    .then(res=>res.json())
+    .then(docs=>{
+
+        let d = document.getElementById("editDoctor");
+        d.innerHTML = "";
+
+        docs.forEach(doc=>{
+            let selected = (doc.Doctor_ID == doctorId) ? "selected" : "";
+            d.innerHTML += `<option value="${doc.Doctor_ID}" ${selected}>${doc.Name}</option>`;
+        });
+
+        // 🔥 أهم سطر في الحل كله
+    if(doctorId){
+            d.value = doctorId;
+        }
+
+        // 👇 دايمًا حمّل الأيام
+        loadEditDays(d.value, date, time);
+
+    });
+}
+
+document.getElementById("editSpecialty").onchange = function(){
+    let sp = this.value;
+    loadEditDoctors(sp, null, null, null);
+};
+
+function loadEditDays(doctorId, selectedDate, time){
+
+    fetch("get_available_days.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({doctor_id: doctorId})
+    })
+    .then(res=>res.json())
+    .then(days=>{
+
+        let daySelect = document.getElementById("editDay");
+        daySelect.innerHTML = "";
+
+        // ❌ لو مش Array → خرج
+        if(!Array.isArray(days)){
+            console.log("NOT ARRAY:", days);
+            return;
+        }
+
+        let firstDate = null;
+
+        days.forEach((d, index)=>{
+
+        let nextDate = getNextDate(d.Work_Day);
+
+        // أول يوم في الليست
+        if(index === 0){
+            firstDate = nextDate;
+        }
+
+        let selected = (selectedDate && nextDate === selectedDate) ? "selected" : "";
+
+        daySelect.innerHTML += `
+            <option value="${nextDate}" ${selected}>
+                ${d.Work_Day} (${nextDate})
+            </option>
+        `;
+    });
+
+
+    // 🔥 لو المستخدم غير الدكتور → اختار أول يوم تلقائي
+    if(!selectedDate && firstDate){
+        daySelect.value = firstDate;
+    }
+
+        loadEditTimes(time);
+
+    });
+}
+
+
+function loadEditTimes(selectedTime){
+
+    let doctor_id = document.getElementById("editDoctor").value;
+    let date = document.getElementById("editDay").value;
+
+    fetch("get_available_times.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({doctor_id, date})
+    })
+    .then(res=>res.json())
+    .then(times=>{
+
+        let timeSelect = document.getElementById("editTime");
+        timeSelect.innerHTML = "";
+
+        if(!Array.isArray(times)) return;
+
+        // 🔥 ضيف الوقت الحالي لو مش موجود
+        if(selectedTime && !times.includes(selectedTime)){
+            times.unshift(selectedTime);
+        }
+
+        times.forEach(t=>{
+            let selected = (t === selectedTime) ? "selected" : "";
+            timeSelect.innerHTML += `<option value="${t}" ${selected}>${t}</option>`;
+        });
+
+    });
+}
+
+document.getElementById("editDay").onchange = function(){
+    loadEditTimes();
+};
+
+
+
+function saveEdit(){
+
+    let id        = document.getElementById("editBookingId").value;
+    let doctor_id = document.getElementById("editDoctor").value;
+    let date      = document.getElementById("editDay").value;
+    let time      = document.getElementById("editTime").value;
+
+    if(!doctor_id || !date || !time){
+        alert("Please select all fields");
+        return;
+    }
+
+    if(!confirm("Are you sure you want to save changes?")){
+        return;
+    }
+
+    fetch("update_booking.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            booking_id: id,
+            doctor_id: doctor_id,
+            date: date,
+            time: time
+        })
+    })
+    .then(res=>res.json())
+    .then(res=>{
+
+        console.log("UPDATE:", res);
+
+        if(res.status === "success"){
+
+            showToast("Appointment updated ✏️","success");
+            reloadPage();
+            closeEdit();
+            loadMyAppointments();
+            loadNotifications();
+
+        }else{
+            showToast(res.message || "Update failed","error");
+        }
+
+    })
+    .catch(err=>{
+        console.error(err);
+        showToast("Server error","error");
+    });
+
+}
+
+document.getElementById("editDoctor").onchange = function(){
+
+    let doctor_id = this.value;
+
+    if(!doctor_id){
+        console.log("Doctor not selected yet");
+        return;
+    }
+
+    // 🔥 امسح اليوم القديم
+    document.getElementById("editDay").innerHTML = "";
+    document.getElementById("editTime").innerHTML = "";
+
+    // 🔥 حمل أيام جديدة بدون selectedDate
+    loadEditDays(doctor_id, null, null);
+};
+
+//حذف حجز
+function deleteBooking(id){
+
+    if(!confirm("Are you sure you want to Cancel this appointment?")){
+        return;
+    }
+
+   fetch("delete_booking.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({booking_id:id})
+    })
+    .then(res=>res.json())
+    .then(res=>{
+
+        console.log("DELETE:", res);
+
+        if(res.status === "success"){
+
+            showToast(
+                "Appointment cancelled ❌",
+                "success"
+            );
+
+            // 🔥 تحديث المواعيد الحالية
+            loadMyAppointments();
+
+            // 🔥 تحديث الهيستوري فورًا
+            loadPatientHistory();
+
+            // 🔥 تحديث الإشعارات
+            loadNotifications();
+
+        }else{
+            showToast(res.message || "Delete failed","error");
+        }
+
+    })
+    .catch(err=>{
+        console.error(err);
+        showToast("Server error","error");
+    });
+
+}
+
+
+//عرض الحجوزات المنتهيه في صفحه Patient history
+function loadPatientHistory(){
+
+    // 🔥 جيب المستخدم
+    const user = JSON.parse(localStorage.getItem("authUser"));
+    if(!user) return;
+
+    fetch("get_history.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({patient_id: user.id})
+    })
+
+    .then(res=>res.json())
+    .then(data=>{
+        
+        let tbody = document.querySelector("#history tbody");
+        tbody.innerHTML = "";
+
+        let index = 1;
+
+        data.forEach(item=>{
+
+           
+            if(
+                item.Status !== "Completed"
+                &&
+                item.Status !== "Canceled"
+            ){
+                return;
+            }
+
+            let date = new Date(item.Booking_Date);
+
+            let year = date.getFullYear();
+            let month = String(date.getMonth() + 1).padStart(2, '0');
+            let dayNum = String(date.getDate()).padStart(2, '0');
+
+            let day = `${year}-${month}-${dayNum}`;
+            let time = date.toTimeString().slice(0,5);
+
+            let row = `
+            <tr>
+
+            <td>${index++}</td>
+
+            <td>${item.specialty_name}</td>
+
+            <td>${item.doctor_name}</td>
+
+            <td>${day}</td>
+
+            <td>${time}</td>
+
+            <td>
+                <span class="status ${
+                    item.Status === "Canceled"
+                    ? "cancelled"
+                    : "done"
+                }">
+                    ${item.Status}
+                </span>
+            </td>
+
+            <td>
+
+                ${
+                    item.Status === "Completed"
+
+                    ?
+
+                    `<button
+                        class="btn-edit"
+                        onclick="openPrescriptionView(${item.Booking_ID})"
+                    >
+                        View
+                    </button>`
+
+                    :
+
+                    "-"
+                }
+
+            </td>
+
+        </tr>
+        `;
+
+            tbody.innerHTML += row;
+        });
+
+    });
+
+}
+
+// Notifications 
+let deleteTarget = null;
+let deleteType = null; // single / all
+
+function loadNotifications(){
+
+    const user = JSON.parse(localStorage.getItem("authUser"));
+    if(!user) return;
+
+    fetch("get_notifications.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({patient_id: user.id})
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        let systemDiv = document.getElementById("systemNotifications");
+        let doctorDiv = document.getElementById("doctorNotifications");
+
+        let systemCount = 0;
+        let doctorCount = 0;
+        let totalUnread = 0; // 🔥 للـ sidebar
+
+        // 🧹 تنظيف
+        systemDiv.innerHTML = "";
+        doctorDiv.innerHTML = "";
+
+        if(!data || data.length === 0){
+            systemDiv.innerHTML = `<div class="empty">No system notifications</div>`;
+            doctorDiv.innerHTML = `<div class="empty">No doctor notifications</div>`;
+
+            // 🔴 اخفاء badge
+            let badge = document.getElementById("notifCount");
+            if(badge) badge.classList.add("hidden");
+
+            return;
+        }
+
+        data.forEach(n=>{
+
+            let div = document.createElement("div");
+            div.className = `notification ${n.type}`;
+
+            // 🔥 حل مشكلة النوع
+            let isUnread = Number(n.is_read) === 0;
+
+            if(isUnread){
+                div.classList.add("unread");
+                totalUnread++;
+            }
+
+            // 🔥 أيقونات
+            let icon = "";
+            if(n.type === "success") icon = "";
+            else if(n.type === "error") icon = "";
+            else if(n.type === "warning") icon = "";
+            else icon = "🔔";
+
+// =========================
+// 🔥 Prescription Notification
+// =========================
+    let msg = n.message;
+
+// =========================
+// 🌍 TRANSLATE NOTIFICATIONS
+// =========================
+if(currentLang === "ar"){
+
+    if(msg === "Booking confirmed successfully"){
+        msg = "تم تأكيد الحجز بنجاح";
+    }
+
+    else if(msg === "Your appointment is tomorrow"){
+        msg = "موعدك غدًا";
+    }
+
+    else if(msg === "Appointment cancelled"){
+        msg = "تم إلغاء الحجز";
+    }
+
+    else if(msg === "Prescription uploaded"){
+        msg = "تم رفع الروشتة";
+    }
+
+    else if(msg === "Appointment updated successfully"){
+        msg = "تم تعديل الحجز بنجاح";
+    }
+
+    else if(msg === "Doctor approved your appointment"){
+        msg = "وافق الطبيب على الحجز";
+    }
+
+    else if(msg === "Doctor rejected your appointment"){
+        msg = "تم رفض الحجز من الطبيب";
+    }
+
+}
+    let bookingId = null;
+
+    // لو إشعار روشتة
+    if(
+        n.source === "doctor"
+        &&
+        n.message.includes("||")
+    ){
+
+        let parts = n.message.split("||");
+
+        msg = parts[0];
+
+        bookingId = parts[1];
+    }
+
+    div.innerHTML = `
+        <span
+            ${
+                bookingId
+                ?
+                `onclick="openPrescriptionView(${bookingId})"
+                style="cursor:pointer;font-weight:bold;"`
+                :
+                ""
+            }
+        >
+            ${icon} ${msg}
+        </span>
+
+        <button
+            class="delete-noti"
+            onclick="openDeletePopup(${n.id})"
+        >
+            ✖
+        </button>
+    `;
+
+            // 🔥 التقسيم
+            if(n.source === "doctor"){
+
+                doctorDiv.appendChild(div);
+                if(isUnread) doctorCount++;
+
+            }else{
+
+                systemDiv.appendChild(div);
+                if(isUnread) systemCount++;
+
+            }
+
+        });
+
+        // 🟢 Empty بعد اللوب
+        if(systemDiv.innerHTML === ""){
+            systemDiv.innerHTML = `<div class="empty">No system notifications</div>`;
+        }
+
+        if(doctorDiv.innerHTML === ""){
+            doctorDiv.innerHTML = `<div class="empty">No doctor notifications</div>`;
+        }
+
+        // =========================
+        // 🔴 تحديث العدادات الداخلية
+        // =========================
+        let sys = document.getElementById("systemCount");
+        let doc = document.getElementById("doctorCount");
+
+        if(sys) sys.innerText = systemCount || "";
+        if(doc) doc.innerText = doctorCount || "";
+
+        // =========================
+        // 🔴 Sidebar Badge (المهم)
+        // =========================
+        let badge = document.getElementById("notifCount");
+
+        if(badge){
+            if(totalUnread > 0){
+                badge.innerText = totalUnread;
+                badge.classList.remove("hidden");
+            }else{
+                badge.classList.add("hidden");
+            }
+        }
+
+    })
+    .catch(err=>{
+        console.error("NOTIFICATIONS ERROR:", err);
+    });
+}
+
+function completeBooking(id){
+
+        console.log("COMPLETE CLICKED:", id); // 🔥
+
+    fetch("complete_booking.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({booking_id:id})
+    })
+    .then(res=>res.json())
+    .then(res=>{
+
+        console.log("COMPLETE:", res);
+
+        if(res.status === "success"){
+
+            alert("Completed ✅");
+
+            // 🔥 تحديث كل حاجة
+            loadMyAppointments();
+            loadPatientHistory();
+            loadNotifications();
+
+        }else{
+            alert(res.message);
+        }
+
+    })
+    .catch(err=>{
+        console.error(err);
+    });
+}
+
+// Notification slider 
+function toggleSection(id){
+
+    let section = document.getElementById(id);
+    let header = section.previousElementSibling;
+
+    let isClosed = section.classList.contains("closed");
+
+    if(isClosed){
+
+        section.classList.remove("closed");
+        header.innerHTML = header.innerHTML.replace("▶", "▼");
+
+        // 🔥 استنى شوية قبل ما تتحول read
+        setTimeout(() => {
+            markAsRead(id);
+        }, 1500);
+
+    }else{
+
+        section.classList.add("closed");
+        header.innerHTML = header.innerHTML.replace("▼", "▶");
+
+    }
+
+}
+
+function markAsRead(sectionId){
+
+    const user = JSON.parse(localStorage.getItem("authUser"));
+    if(!user) return;
+
+    let source = (sectionId === "doctorNotifications") ? "doctor" : "system";
+
+    fetch("mark_notifications_read.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            patient_id: user.id,
+            source: source
+        })
+    })
+    .then(res=>res.json())
+    .then(res=>{
+        console.log("MARK READ:", res);
+
+        // 🔥 إعادة تحميل عشان العداد يتصفر
+        loadNotifications();
+    });
+
+}
+
+function openDeletePopup(id){
+
+    console.log("OPEN POPUP ID:", id); // 🔥 للتأكد
+
+    deleteTarget = id;
+    deleteType = "single"; // 🔥 مهم جدًا
+
+    document.getElementById("deletePopup").style.display = "flex";
+}
+
+function openDeleteAllPopup(type){
+
+    console.log("OPEN DELETE ALL:", type);
+
+    deleteTarget = type;   // system أو doctor
+    deleteType = "all";
+
+    document.getElementById("deleteText").innerText =
+        `Are you sure you want to delete all ${type} notifications?`;
+
+    document.getElementById("deletePopup").style.display = "flex";
+}
+
+
+function closeDeletePopup(){
+    document.getElementById("deletePopup").style.display = "none";
+    deleteTarget = null;
+    deleteType = null;
+}
+
+function confirmDelete(){
+
+    console.log("CONFIRM CLICKED");
+    console.log("DELETE TYPE:", deleteType);
+    console.log("DELETE TARGET:", deleteTarget);
+
+    // 🔥 استخدم القيم الأول
+    if(deleteType === "single"){
+        deleteNotification(deleteTarget);
+    }
+
+    if(deleteType === "all"){
+        deleteAllNotifications(deleteTarget);
+    }
+
+    // 🔥 بعد كدا اقفل وامسح
+    closeDeletePopup();
+}
+
+function deleteNotification(id){
+
+    const user = JSON.parse(localStorage.getItem("authUser"));
+
+    console.log("ID:", id);
+    console.log("USER:", user);
+
+    fetch("delete_notification.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            id: id,
+            patient_id: user?.id   // 🔥 ركز هنا
+        })
+    })
+    .then(res=>res.json())
+    .then(res=>{
+        console.log("SERVER RESPONSE:", res);
+
+        if(res.status === "success"){
+            showToast("Notification deleted 🗑️","success");
+            loadNotifications();
+        }else{
+            showToast(res.message,"error");
+        }
+    });
+
+}
+function deleteAllNotifications(type){
+
+    const user = JSON.parse(localStorage.getItem("authUser"));
+
+    fetch("delete_all_notifications.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            type:type,
+            patient_id: user.id
+        })
+    })
+    .then(res=>res.json())
+    .then(res=>{
+
+        if(res.status === "success"){
+            showToast(`All ${type} notifications cleared 🧹`,"success");
+            loadNotifications();
+        }else{
+            showToast("Error","error");
+        }
+
+    })
+    .catch(()=>{
+        showToast("Server error","error");
+    });
+
+}
+
+//تعديل بيانات المستخدم
+let pendingUpdate = {};
+
+function enableEdit(fieldId, btn){
+
+    let input = document.getElementById(fieldId);
+
+    // 🧠 احفظ القيمة القديمة
+    let oldValue = input.value;
+
+    if(input.tagName === "SELECT"){
+        input.removeAttribute("disabled");
+    }else{
+        input.removeAttribute("readonly");
+    }
+
+    input.focus();
+    btn.innerText = "Save";
+
+    btn.onclick = function(){
+
+        let newValue = input.value;
+
+        // 🔥 لو مفيش تغيير
+        if(newValue === oldValue){
+            
+            showToast("No changes made ⚠️","warning");
+
+            // رجع الحالة
+            if(input.tagName === "SELECT"){
+                input.setAttribute("disabled", true);
+            }else{
+                input.setAttribute("readonly", true);
+            }
+
+            btn.innerText = "Edit";
+            btn.onclick = function(){
+                enableEdit(fieldId, btn);
+            };
+
+            return;
+        }
+
+        // بدل saveField مباشرة
+        pendingUpdate = {
+            fieldId: fieldId,
+            newValue: newValue
+        };
+
+        document.getElementById("popupText").innerText =
+            `Change from "${oldValue}" to "${newValue}" ?`;
+
+        document.getElementById("confirmPopup").style.display = "flex";
+
+        btn.innerText = "Edit";
+
+        btn.onclick = function(){
+            enableEdit(fieldId, btn);
+        }
+
+    }
+
+}
+
+
+function closePopup(){
+    document.getElementById("confirmPopup").style.display = "none";
+    reloadPage()
+}
+
+function confirmUpdate(){
+    
+    closePopup();
+    saveField(pendingUpdate.fieldId, pendingUpdate.newValue);
+    
+    showToast("Updated Successfully ✏️","success");
+}
+
+//حفظ التعديلات 
+function saveField(field, value){
+
+    const user = JSON.parse(localStorage.getItem("authUser"));
+    if(!user) return;
+
+    fetch("update_profile.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            patient_id: user.id,
+            field: field,
+            value: value
+        })
+    })
+    .then(res=>res.json())
+    .then(res=>{
+        console.log("UPDATE:", res);
+
+        if(res.status === "success"){
+        
+        }else{
+            alert(res.message || "Error");
+        }
+    })
+    .catch(err=>{
+        console.error(err);
+    });
+
+}
+
+//تحميل بيانات المسخدم من الداتا بيز
+function loadProfile(){
+
+    const user = JSON.parse(localStorage.getItem("authUser"));
+    if(!user) return;
+
+    fetch("get_profile.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({patient_id: user.id})
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        console.log("PROFILE:", data); // 🔥 للتأكد
+
+        document.getElementById("name").value = data.name || "";
+        document.getElementById("email").value = data.email || "";
+        document.getElementById("phone").value = data.phone || "";
+        document.getElementById("gender").value = data.gender || "Male";
+
+    });
+
+}
+
+//تغير كلمه السر 
+function changePassword(){
+
+    let oldPass = document.getElementById("oldPassword").value;
+    let newPass = document.getElementById("newPassword").value;
+    let confirmPass = document.getElementById("confirmPassword").value;
+
+    const user = JSON.parse(localStorage.getItem("authUser"));
+    if(!user) return;
+
+    // ✅ Validation
+    if(!oldPass || !newPass || !confirmPass){
+        alert("Please fill all fields");
+        return;
+    }
+
+    if(newPass !== confirmPass){
+        alert("Passwords do not match");
+        return;
+    }
+
+    if(newPass.length < 6){
+        alert("Password must be at least 6 characters");
+        return;
+    }
+
+    // 🔥 ارسال للسيرفر
+    fetch("change_password.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+            patient_id: user.id,
+            old_password: oldPass,
+            new_password: newPass
+        })
+    })
+    .then(res=>res.json())
+    .then(res=>{
+
+        console.log("CHANGE PASS:", res);
+
+        if(res.status === "success"){
+            showToast("Password changed successfully ✅", "success");
+            reloadPage();
+            // 🧹 فضي الفورم
+            document.getElementById("oldPassword").value = "";
+            document.getElementById("newPassword").value = "";
+            document.getElementById("confirmPassword").value = "";
+
+        }else{
+            showToast(res.message, "error");
+        }
+
+    })
+    .catch(err=>{
+        console.error(err);
+    });
+
+}
+
+function showToast(message, type="success"){
+
+    let toast = document.getElementById("toast");
+
+    let icon = "";
+
+    if(type === "success") icon = "✅";
+    else if(type === "error") icon = "❌";
+    else if(type === "warning") icon = "⚠️";
+
+    toast.innerHTML = `${icon} ${message}`;
+    toast.className = "show " + type;
+
+    setTimeout(()=>{
+        toast.className = "";
+    }, 3000);
+}
+
+function togglePassword(id, icon){
+
+    let input = document.getElementById(id);
+
+    if(input.type === "password"){
+        input.type = "text";
+        icon.innerText = "🙈";
+    }else{
+        input.type = "password";
+        icon.innerText = "👁";
+    }
+
+}
+
+//صوره المستخدم
+function loadUserAvatar(){
+
+    const user = JSON.parse(localStorage.getItem("authUser"));
+    if(!user) return;
+
+    let name = user.name || "U";
+
+    // 🔥 خد أول حرفين
+    let initials = name
+        .split(" ")
+        .map(word => word[0])
+        .join("")
+        .substring(0,2);
+
+    document.getElementById("userAvatar").innerText = initials;
+
+}
+
+//اعده التحميل بعد اي اشكن يتم
+function reloadPage(delay = 200){
+    setTimeout(()=>{
+        location.reload();
+    }, delay);
+}
+
+// =========================
+// 🔥 OPEN PRESCRIPTION VIEW
+// =========================
+function openPrescriptionView(booking_id){
+
+    console.log("BOOKING ID:", booking_id);
+
+    fetch("get_prescription.php",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body: JSON.stringify({
+            booking_id: booking_id
+        })
+
+    })
+
+    // 🔥 ناخد TEXT الأول
+    .then(async res=>{
+
+        let text = await res.text();
+
+        console.log("RAW RESPONSE:", text);
+
+        try{
+            return JSON.parse(text);
+        }
+        catch(e){
+
+            throw new Error(text);
+        }
+    })
+
+    .then(data=>{
+
+        console.log(
+            "PRESCRIPTION:",
+            data
+        );
+
+        if(data.status !== "success"){
+
+            alert(data.message);
+
+            return;
+        }
+
+        const p = data.prescription;
+
+        // =========================
+        // 🟢 NOTES
+        // =========================
+        document.getElementById(
+            "prescriptionText"
+        ).innerText = p.notes || "";
+
+        // =========================
+        // 🟢 FILE
+        // =========================
+        let fileBox = document.getElementById(
+            "prescriptionFileBox"
+        );
+
+        fileBox.innerHTML = "";
+
+        if(p.file){
+
+            let ext = p.file
+                .split(".")
+                .pop()
+                .toLowerCase();
+
+            let filePath =
+                "../uploads/prescriptions/" + p.file;
+
+            // =========================
+            // 🖼 IMAGE
+            // =========================
+            if(
+                ext === "jpg" ||
+                ext === "jpeg" ||
+                ext === "png" ||
+                ext === "webp"
+            ){
+
+                fileBox.innerHTML = `
+                    <img src="${filePath}">
+
+                    <a
+                        href="${filePath}"
+                        download
+                        class="download-btn"
+                    >
+                        Download Image
+                    </a>
+                `;
+            }
+
+            // =========================
+            // 📄 PDF
+            // =========================
+            else if(ext === "pdf"){
+
+                fileBox.innerHTML = `
+                    <iframe
+                        src="${filePath}"
+                    ></iframe>
+
+                    <a
+                        href="${filePath}"
+                        download
+                        class="download-btn"
+                    >
+                        Download PDF
+                    </a>
+                `;
+            }
+        }
+
+        // =========================
+        // 🔥 OPEN POPUP
+        // =========================
+        document.getElementById(
+            "prescriptionViewer"
+        ).style.display = "flex";
+
+    })
+
+    .catch(err=>{
+
+        console.log(
+            "PRESCRIPTION ERROR:",
+            err
+        );
+
+        alert("Server Error");
+    });
+}
+
+
+// =========================
+// ❌ CLOSE VIEWER
+// =========================
+function closePrescriptionView(){
+
+    document.getElementById(
+        "prescriptionViewer"
+    ).style.display = "none";
+}
+
+
+// =========================
+// 🔥 CHECK REMINDERS
+// =========================
+function checkReminders(){
+
+    fetch(
+        "check_reminders.php"
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        console.log(
+            "REMINDERS:",
+            data
+        );
+
+        // 🔥 تحديث الإشعارات
+        loadNotifications();
+    })
+
+    .catch(err=>{
+
+        console.log(
+            "REMINDER ERROR:",
+            err
+        );
+    });
+}
+
+
+</script>
+</body>
+</html>

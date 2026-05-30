@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account</title>
+
+<style>
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+/* Background */
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#00c6ff,#0072ff);
+}
+
+/* Language Button */
+.lang-btn{
+    position:absolute;
+    top:20px;
+    right:20px;
+    background:#fff;
+    border:none;
+    padding:6px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* Back */
+.back-btn{
+    position:absolute;
+    top:20px;
+    left:20px;
+    color:#fff;
+    border:none;
+    background:transparent;
+    cursor:pointer;
+}
+
+/* Box */
+.box{
+    width:380px;
+    background:#fff;
+    padding:40px 30px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 20px 40px rgba(0,0,0,0.2);
+}
+
+/* Inputs */
+.box input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+/* Button */
+.box button{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,#00c6ff,#0072ff);
+    color:#fff;
+    cursor:pointer;
+}
+
+/* Toggle */
+.toggle{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:10px 0;
+}
+
+.toggle button{
+    width: 50%;
+    padding: 8px;
+    border: solid 1px black;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #eee;
+    color: #00000042;
+}
+
+
+.toggle .active{
+    background:#0072ff;
+    color:#fff;
+}
+
+.hidden{
+    display: none !important;
+}
+
+/* Toggle Buttons */
+.toggle{
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.toggle button{
+    flex:1;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    background:#f5f5f5;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.toggle button.active{
+    background: linear-gradient(45deg,#3b82f6,#06b6d4);
+    color:#fff;
+    border:none;
+}
+
+/* Input Group */
+.input-group{
+    display:flex;
+    align-items:center;
+    border:1px solid #ccc;
+    border-radius:10px;
+    overflow:hidden;
+    margin:10px 0;
+}
+
+.input-group span{
+    background:#f1f1f1;
+    padding:12px;
+    font-size:14px;
+    color:#555;
+}
+
+.input-group input{
+    border:none;
+    outline:none;
+    flex:1;
+    padding:12px;
+}
+
+/* Message */
+.choose-text{
+    font-size:13px;
+    color:#666;
+    margin-bottom:5px;
+}
+
+
+.choose-text{
+    font-size:14px;
+    color:#666;
+    margin-bottom:10px;
+}
+
+.input-group{
+    display:flex;
+    align-items:center;
+    border:1px solid #ccc;
+    border-radius:10px;
+    overflow:hidden;
+    margin:10px 0;
+}
+
+.input-group span{
+    background:#f1f1f1;
+    padding:12px;
+    font-size:14px;
+    color:#555;
+    border-right:1px solid #ccc;
+}
+
+.input-group input{
+    border:none;
+    outline:none;
+    flex:1;
+    padding:12px;
+}
+
+/* OTP */
+.otp-wrapper{
+
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:20px;
+    direction: ltr;
+}
+
+.otp-input{
+
+    width:65px;
+    height:70px;
+
+    border-radius:18px;
+
+    border:2px solid #dbeafe;
+
+    text-align:center;
+
+    font-size:30px;
+
+    font-weight:bold;
+
+    outline:none;
+
+    transition:.3s;
+
+    direction: ltr;
+}
+
+.otp-input:focus{
+
+    border-color:#0ea5e9;
+
+    box-shadow:
+        0 0 15px rgba(14,165,233,.25);
+
+    transform:translateY(-2px);
+}
+</style>
+
+</head>
+
+<body>
+
+<button class="back-btn" onclick="goBack()">← Back</button>
+<button id="langBtn" class="lang-btn">AR</button>
+
+<div class="box">
+
+    <h2 data-lang="register_title">Create Account</h2>
+    <p data-lang="register_sub">Sign up to get started</p>
+
+    <form onsubmit="registerUser(event)">
+
+        <!-- Name -->
+        <input type="text" id="name" data-lang-placeholder="name" required>
+
+
+        <div class="toggle">
+            <button type="button" id="emailBtn" class="active" onclick="showEmail()" data-lang="email">Email</button>
+            <button type="button" id="phoneBtn" onclick="showPhone()" data-lang="phone">Phone</button>
+        </div>
+
+        <!-- رسالة التوضيح -->
+        <p class="choose-text" data-lang="choose_method">
+            Please choose Email or Phone to continue
+        </p>
+
+        <!-- Email -->
+        <div class="input-group" id="emailGroup">
+            <input 
+            data-lang-placeholder="email_placeholder"
+            type="email"
+            id="emailInput"
+            placeholder="Enter your email"
+            required
+        >
+                    
+        </div>
+
+        <!-- Phone -->
+        <div class="input-group hidden" id="phoneGroup">
+            <span>+20</span>
+            <input 
+                data-lang-placeholder="phone_placeholder"
+                type="tel"
+                id="phoneInput"
+                placeholder="10XXXXXXXX"
+                pattern="[0-9]{11}"
+                title="Enter valid phone number"
+            >
+        </div>
+
+        <!-- Birth Date -->
+        <input type="date" id="birthdate" required>
+
+        <!-- Password -->
+        <input type="password" id="password" data-lang-placeholder="password" required>
+
+        <input type="password"  id="confirmPassword" data-lang-placeholder="confirm" required>
+
+        <button
+            type="submit"
+            data-lang="register_btn"
+        >
+            Create Account
+        </button>
+
+        <p id="msg"></p>
+
+    </form>
+
+</div>
+
+<!-- =========================
+     🔥 OTP POPUP
+========================= -->
+
+<div
+    id="verifyPopup"
+
+    style="
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.55);
+        display:none;
+        justify-content:center;
+        align-items:center;
+        z-index:99999;
+        padding:20px;
+    "
+>
+
+    <div
+        style="
+            width:100%;
+            max-width:450px;
+            background:#fff;
+            border-radius:28px;
+            padding:40px;
+            text-align:center;
+            box-shadow:
+                0 20px 60px rgba(0,0,0,.2);
+        "
+    >
+
+        <!-- ICON -->
+        <div
+            style="
+                width:90px;
+                height:90px;
+                margin:auto;
+                margin-bottom:20px;
+                border-radius:50%;
+                background:
+                    linear-gradient(
+                        135deg,
+                        #1e3a8a,
+                        #0ea5e9
+                    );
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                color:#fff;
+                font-size:40px;
+            "
+        >
+            ✉️
+        </div>
+
+        <h2
+            style="
+                margin-bottom:10px;
+                color:#1e3a8a;
+            "
+            data-lang="verify_title"
+        >
+            Verify Your Email
+        </h2>
+
+        <p
+            style="
+                color:#64748b;
+                margin-bottom:30px;
+            "
+            data-lang="verify_sub"
+        >
+            Enter the 4-digit code
+            sent to your email
+        </p>
+
+        <!-- OTP BOXES -->
+        <div
+            class="otp-wrapper"
+        >
+
+            <input
+                type="text"
+                class="otp-input"
+                maxlength="1"
+            >
+
+            <input
+                type="text"
+                class="otp-input"
+                maxlength="1"
+            >
+
+            <input
+                type="text"
+                class="otp-input"
+                maxlength="1"
+            >
+
+            <input
+                type="text"
+                class="otp-input"
+                maxlength="1"
+            >
+
+        </div>
+
+        <!-- TIMER -->
+        <p
+            id="otpTimer"
+            data-lang="resend_timer"
+
+            style="
+                margin-top:15px;
+                color:#64748b;
+                font-size:14px;
+            "
+        >
+            Resend code in 60s
+        </p>
+
+        <!-- RESEND -->
+        <button
+
+            id="resendBtn"
+
+            type="button"
+
+            onclick="resendOTP()"
+
+            disabled
+
+            style="
+                width:100%;
+                margin-top:15px;
+                padding:14px;
+                border:none;
+                border-radius:14px;
+                background:#cbd5e1;
+                color:#fff;
+                cursor:not-allowed;
+                font-weight:600;
+            "
+
+            data-lang="resend_code"
+        >
+            Resend Code
+        </button>
+
+        <!-- BTN -->
+        <button
+            id="verifyBtn"  
+            type="button"
+            onclick="verifyEmailCode()"
+            style="
+                width:100%;
+                padding:16px;
+                border:none;
+                border-radius:16px;
+                background:
+                    linear-gradient(
+                        90deg,
+                        #1e3a8a,
+                        #0ea5e9
+                    );
+                color:#fff;
+                font-size:16px;
+                font-weight:600;
+                cursor:pointer;
+            "
+
+            data-lang="verify_account"
+        >
+            Verify Account
+        </button>
+
+        <p
+            id="countdownText"
+
+            style="
+                margin-top:12px;
+                color:#64748b;
+                font-size:14px;
+            "
+        >
+        </p>
+        <p
+            id="otpMsg"
+
+            style="
+                margin-top:18px;
+                color:red;
+            "
+        ></p>
+
+    </div>
+
+</div>
+
+<script>
+
+/* 🌍 TRANSLATIONS */
+const translations = {
+
+    en:{
+        // 🔹 REGISTER
+        register_title:"Create Account",
+        register_sub:"Sign up to get started",
+        register_btn:"Create Account",
+
+        // 🔹 FIELDS
+        name:"Full Name",
+        email:"Email",
+        phone:"Phone",
+        password:"Password",
+        confirm:"Confirm Password",
+
+        // 🔹 PLACEHOLDERS
+        name_placeholder:"Enter your full name",
+        email_placeholder:"Enter your email",
+        phone_placeholder:"Enter your phone number",
+        password_placeholder:"Enter your password",
+        confirm_placeholder:"Confirm your password",
+
+        // 🔹 EXTRA
+        choose_method:"Please choose Email or Phone to continue",
+
+        // 🔹 VERIFY POPUP
+        verify_title:"Verify Your Email",
+        verify_sub:"Enter the 4-digit code sent to your email",
+        resend_timer:"Resend code in 60s",
+        resend_code:"Resend Code",
+        verify_account:"Verify Account",
+        sending:"Sending...",
+        verifying:"Verifying...",
+        verified:"Verified",
+        server_error:"Server Error",
+        enter_valid_code:"Enter valid code",
+        email_verified:"Email verified successfully",
+        new_code_sent:"New code sent successfully",
+        can_resend:"You can resend code now",
+    },
+
+    ar:{
+        // 🔹 REGISTER
+        register_title:"إنشاء حساب",
+        register_sub:"سجل الآن للبدء",
+        register_btn:"إنشاء الحساب",
+
+        // 🔹 FIELDS
+        name:"الاسم بالكامل",
+        email:"البريد الإلكتروني",
+        phone:"رقم الهاتف",
+        password:"كلمة المرور",
+        confirm:"تأكيد كلمة المرور",
+
+        // 🔹 PLACEHOLDERS
+        name_placeholder:"ادخل اسمك بالكامل",
+        email_placeholder:"ادخل بريدك الإلكتروني",
+        phone_placeholder:"ادخل رقم هاتفك",
+        password_placeholder:"ادخل كلمة المرور",
+        confirm_placeholder:"أكد كلمة المرور",
+
+        // 🔹 EXTRA
+        choose_method:"يرجى اختيار البريد الإلكتروني أو رقم الهاتف للمتابعة",
+
+        // 🔹 VERIFY POPUP
+        verify_title:"تأكيد البريد الإلكتروني",
+        verify_sub:"أدخل رمز التحقق المكون من 4 أرقام",
+        resend_timer:"إعادة الإرسال خلال 60 ثانية",
+        resend_code:"إعادة إرسال الرمز",
+        verify_account:"تأكيد الحساب",
+        sending:"جاري الإرسال...",
+        verifying:"جاري التحقق...",
+        verified:"تم التحقق",
+        server_error:"خطأ في السيرفر",
+        enter_valid_code:"أدخل رمز صحيح",
+        email_verified:"تم تأكيد البريد الإلكتروني بنجاح",
+        new_code_sent:"تم إرسال رمز جديد بنجاح",
+        can_resend:"يمكنك إعادة إرسال الرمز الآن",
+    }
+
+};
+
+let currentLang = localStorage.getItem("lang") || "en";
+
+/* Apply Language */
+function applyLang(lang){
+
+    document.querySelectorAll("[data-lang]").forEach(el=>{
+        let key = el.getAttribute("data-lang");
+        if(translations[lang][key]){
+            el.innerText = translations[lang][key];
+        }
+    });
+
+    document.querySelectorAll("[data-lang-placeholder]").forEach(el=>{
+        let key = el.getAttribute("data-lang-placeholder");
+        if(translations[lang][key]){
+            el.placeholder = translations[lang][key];
+        }
+    });
+
+    document.body.dir = (lang === "ar") ? "rtl" : "ltr";
+    localStorage.setItem("lang", lang);
+}
+
+applyLang(currentLang);
+
+/* Toggle Language */
+document.getElementById("langBtn").onclick = function(){
+    currentLang = currentLang === "en" ? "ar" : "en";
+    applyLang(currentLang);
+    this.innerText = currentLang === "en" ? "AR" : "EN";
+};
+
+/* Toggle Email / Phone */
+function showEmail(){
+    document.getElementById("emailInput").classList.remove("hidden");
+    document.getElementById("phoneInput").classList.add("hidden");
+
+    document.getElementById("emailInput").required = true;
+    document.getElementById("phoneInput").required = false;
+
+    emailBtn.classList.add("active");
+    phoneBtn.classList.remove("active");
+}
+
+function showPhone(){
+    document.getElementById("phoneInput").classList.remove("hidden");
+    document.getElementById("emailInput").classList.add("hidden");
+
+    document.getElementById("phoneInput").required = true;
+    document.getElementById("emailInput").required = false;
+
+    phoneBtn.classList.add("active");
+    emailBtn.classList.remove("active");
+}
+
+/* Register */
+function registerUser(e){
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("emailInput").value.trim();
+    const phone = document.getElementById("phoneInput").value.trim();
+    const birthdate = document.getElementById("birthdate").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    // لازم واحد منهم
+    if(!email && !phone){
+        showMsg("Enter Email or Phone", "error");
+        return;
+    }
+
+    if(password !== confirmPassword){
+        showMsg("Password not match", "error");
+        return;
+    }
+
+    fetch("patient_page/register.php", {  // 🔥 المسار مهم
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name,
+            email,
+            phone,
+            birthdate,
+            password
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+            console.log(data);
+
+        if(data.status === "success"){
+
+            // 🔥 save email
+            localStorage.setItem(
+                "verify_email",
+                data.email
+            );
+
+            // 🔥 open popup
+            openVerificationPopup();
+
+        }else{
+                showMsg(data.message, "error");
+            }
+    })
+    .catch(()=>{
+        showMsg("Server Error", "error");
+    });
+}
+
+/* رسالة */
+function showMsg(msg,type){
+    let el = document.getElementById("msg");
+    el.innerText = msg;
+    el.style.color = type === "success" ? "green" : "red";
+}
+
+/* Back */
+function goBack(){
+    window.location.href = "./Login_page.html";
+}
+
+const emailGroup = document.getElementById("emailGroup");
+const phoneGroup = document.getElementById("phoneGroup");
+
+const emailInput = document.getElementById("emailInput");
+const phoneInput = document.getElementById("phoneInput");
+
+const emailBtn = document.getElementById("emailBtn");
+const phoneBtn = document.getElementById("phoneBtn");
+
+function showEmail(){
+
+    emailGroup.classList.remove("hidden");
+    phoneGroup.classList.add("hidden");
+
+    emailInput.required = true;
+    phoneInput.required = false;
+
+    phoneInput.value = "";
+
+    emailBtn.classList.add("active");
+    phoneBtn.classList.remove("active");
+}
+
+function showPhone(){
+
+    phoneGroup.classList.remove("hidden");
+    emailGroup.classList.add("hidden");
+
+    phoneInput.required = true;
+    emailInput.required = false;
+
+    emailInput.value = "";
+
+    phoneBtn.classList.add("active");
+    emailBtn.classList.remove("active");
+}
+
+/* منع إدخال غير أرقام */
+phoneInput.addEventListener("input", function(){
+    this.value = this.value.replace(/[^0-9]/g, '');
+});
+
+/* افتراضي */
+window.addEventListener(
+    "load",
+    function(){
+
+        showEmail();
+    }
+);
+
+// =========================
+// 🔥 OPEN POPUP
+// =========================
+function openVerificationPopup(){
+    startOTPTimer();
+
+    document.getElementById(
+        "verifyPopup"
+    ).style.display = "flex";
+}
+
+// =========================
+// 🔥 VERIFY EMAIL
+// =========================
+// =========================
+// 🔥 VERIFY EMAIL
+// =========================
+function verifyEmailCode(){
+
+    const code =
+        getOTPCode();
+
+    const verifyBtn =
+        document.getElementById(
+            "verifyBtn"
+        );
+
+    const otpMsg =
+        document.getElementById(
+            "otpMsg"
+        );
+
+    // =========================
+    // 🔥 BUTTON LOADING
+    // =========================
+    verifyBtn.innerText =
+    translations[currentLang].verifying;
+
+    verifyBtn.disabled = true;
+
+    // =========================
+    // 🔥 GET EMAIL
+    // =========================
+    const email =
+        localStorage.getItem(
+            "verify_email"
+        );
+
+    // =========================
+    // 🔥 VALIDATION
+    // =========================
+    if(code.length !== 4){
+
+        otpMsg.style.color =
+            "red";
+
+        otpMsg.innerText =
+            translations[currentLang].enter_valid_code
+
+        verifyBtn.innerText =
+            translations[currentLang].verify_account
+
+        verifyBtn.disabled =
+            false;
+
+        return;
+    }
+
+    // =========================
+    // 🔥 REQUEST
+    // =========================
+    fetch(
+        "patient_page/verify_email.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+
+                email,
+                code
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        // =========================
+        // 🔥 SUCCESS
+        // =========================
+        if(data.status === "success"){
+
+            otpMsg.style.color =
+                "green";
+
+            otpMsg.innerHTML =
+                "✅ Email verified successfully";
+
+            // 🔥 remove email
+            localStorage.removeItem(
+                "verify_email"
+            );
+
+            // 🔥 success animation
+            verifyBtn.innerHTML =
+            "✅ " + translations[currentLang].verified
+
+            verifyBtn.style.background =
+                "#22c55e";
+
+            // 🔥 redirect
+            setTimeout(()=>{
+
+                window.location.href =
+                    "Login_page.html";
+
+            },1500);
+
+        }
+
+        // =========================
+        // 🔥 ERROR
+        // =========================
+        else{
+
+            otpMsg.style.color =
+                "red";
+
+            otpMsg.innerText =
+                data.message;
+
+            // 🔥 shake animation
+            document.querySelector(
+                ".otp-wrapper"
+            ).animate([
+
+                {
+                    transform:
+                    "translateX(-8px)"
+                },
+
+                {
+                    transform:
+                    "translateX(8px)"
+                },
+
+                {
+                    transform:
+                    "translateX(-8px)"
+                },
+
+                {
+                    transform:
+                    "translateX(0)"
+                }
+
+            ],{
+
+                duration:300
+            });
+
+            // 🔥 reset button
+            verifyBtn.innerText =
+                "Verify Account";
+
+            verifyBtn.disabled =
+                false;
+        }
+
+    })
+
+    // =========================
+    // 🔥 SERVER ERROR
+    // =========================
+    .catch(()=>{
+
+        otpMsg.style.color =
+            "red";
+
+        otpMsg.innerText =
+            translations[currentLang].server_error
+
+        verifyBtn.innerText =
+            "Verify Account";
+
+        verifyBtn.disabled =
+            false;
+    });
+}
+
+
+// =========================
+// 🔥 RESEND CODE
+// =========================
+let resendCooldown = false;
+
+function resendCode(){
+
+    if(resendCooldown) return;
+
+    const email =
+        localStorage.getItem(
+            "verify_email"
+        );
+
+    fetch(
+        "patient_page/resend_otp.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+                email
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.status === "success"){
+
+            document.getElementById(
+                "otpMsg"
+            ).style.color = "green";
+
+            document.getElementById(
+                "otpMsg"
+            ).innerText =
+                "New code sent";
+
+            startCountdown();
+        }
+
+    })
+
+    .catch(()=>{
+
+        document.getElementById(
+            "otpMsg"
+        ).innerText =
+            "Server Error";
+    });
+}
+
+// =========================
+// 🔥 COUNTDOWN
+// =========================
+function startCountdown(){
+
+    resendCooldown = true;
+
+    let seconds = 60;
+
+    const btn =
+        document.getElementById(
+            "resendBtn"
+        );
+
+    const text =
+        document.getElementById(
+            "countdownText"
+        );
+
+    btn.disabled = true;
+
+    const interval = setInterval(()=>{
+
+        text.innerText =
+            "Resend available in "
+            +
+            seconds
+            +
+            "s";
+
+        seconds--;
+
+        if(seconds < 0){
+
+            clearInterval(interval);
+
+            resendCooldown = false;
+
+            btn.disabled = false;
+
+            text.innerText = "";
+        }
+
+    },1000);
+}
+
+// =========================
+// 🔥 OTP INPUTS
+// =========================
+const otpInputs =
+    document.querySelectorAll(
+        ".otp-input"
+    );
+
+otpInputs.forEach((input,index)=>{
+
+    // =========================
+    // 🔥 INPUT
+    // =========================
+    input.addEventListener(
+        "input",
+        function(e){
+
+            // numbers only
+            this.value =
+                this.value.replace(
+                    /[^0-9]/g,
+                    ''
+                );
+
+            // =========================
+            // 🔥 PASTE FULL OTP
+            // =========================
+            if(
+                e.inputType ===
+                "insertFromPaste"
+            ){
+
+                const pasted =
+                    this.value;
+
+                if(
+                    pasted.length === 4
+                ){
+
+                    pasted
+                    .split('')
+                    .forEach((num,i)=>{
+
+                        if(otpInputs[i]){
+
+                            otpInputs[i]
+                            .value = num;
+                        }
+                    });
+
+                    verifyEmailCode();
+
+                    return;
+                }
+            }
+
+            // =========================
+            // 🔥 NEXT INPUT
+            // =========================
+            if(
+                this.value
+                &&
+                index < otpInputs.length - 1
+            ){
+
+                otpInputs[
+                    index + 1
+                ].focus();
+            }
+
+            // =========================
+            // 🔥 AUTO VERIFY
+            // =========================
+            const code =
+                getOTPCode();
+
+            if(code.length === 4){
+
+                verifyEmailCode();
+            }
+        }
+    );
+
+        // =========================
+        // 🔥 BACKSPACE
+        // =========================
+        input.addEventListener(
+            "keydown",
+            function(e){
+
+                if(
+                    e.key === "Backspace"
+                    &&
+                    !this.value
+                    &&
+                    index > 0
+                ){
+
+                    otpInputs[
+                        index - 1
+                    ].focus();
+                }
+            }
+        );
+    });
+
+// =========================
+// 🔥 GET OTP
+// =========================
+function getOTPCode(){
+
+    let code = "";
+
+    Array.from(otpInputs)
+    .forEach(input=>{
+
+        code += input.value;
+    });
+
+    return code;
+}
+
+// =========================
+// 🔥 TIMER
+// =========================
+let timer = 60;
+
+function startOTPTimer(){
+
+    timer = 60;
+
+    const timerText =
+        document.getElementById(
+            "otpTimer"
+        );
+
+    const resendBtn =
+        document.getElementById(
+            "resendBtn"
+        );
+
+    resendBtn.disabled = true;
+
+    resendBtn.style.background =
+        "#cbd5e1";
+
+    resendBtn.style.cursor =
+        "not-allowed";
+
+    const interval =
+        setInterval(()=>{
+
+            timer--;
+
+        timerText.innerText =
+
+            (currentLang === "ar")
+
+            ?
+
+            `إعادة الإرسال خلال ${timer} ثانية`
+
+            :
+
+            `Resend code in ${timer}s`;
+
+            if(timer <= 0){
+
+                clearInterval(interval);
+
+                timerText.innerText =
+                    translations[currentLang].can_resend
+
+                resendBtn.disabled = false;
+
+                resendBtn.style.background =
+                    "linear-gradient(90deg,#1e3a8a,#0ea5e9)";
+
+                resendBtn.style.cursor =
+                    "pointer";
+            }
+
+        },1000);
+}
+
+// =========================
+// 🔥 RESEND OTP
+// =========================
+function resendOTP(){
+
+    const email =
+        localStorage.getItem(
+            "verify_email"
+        );
+
+    if(!email){
+        return;
+    }
+
+    // 🔥 loading
+    const resendBtn =
+        document.getElementById(
+            "resendBtn"
+        );
+
+    resendBtn.innerText =
+        "Sending...";
+
+    resendBtn.disabled = true;
+
+    fetch(
+        "patient_page/resend_otp.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+                email
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.status === "success"){
+
+            document.getElementById(
+                "otpMsg"
+            ).style.color =
+                "green";
+
+            document.getElementById(
+                "otpMsg"
+            ).innerText =
+                translations[currentLang].new_code_sent
+
+            // 🔥 clear boxes
+            otpInputs.forEach(input=>{
+
+                input.value = "";
+            });
+
+            otpInputs[0].focus();
+
+            // 🔥 restart timer
+            startOTPTimer();
+
+        }else{
+
+            document.getElementById(
+                "otpMsg"
+            ).style.color =
+                "red";
+
+            document.getElementById(
+                "otpMsg"
+            ).innerText =
+                data.message;
+        }
+
+        resendBtn.innerText =
+            translations[currentLang].resend_code
+
+    })
+
+    .catch(()=>{
+
+        document.getElementById(
+            "otpMsg"
+        ).innerText =
+            "Server Error";
+
+        resendBtn.innerText =
+            "Resend Code";
+    });
+}
+</script>
+
+</body>
+</html>

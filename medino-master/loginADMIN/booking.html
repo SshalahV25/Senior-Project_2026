@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+/* =========================
+   FORM BOX
+========================= */
+.form-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.form-box input,
+.form-box select {
+    flex: 1;
+    min-width: 160px;
+
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-box input:focus,
+.form-box select:focus {
+    border-color: #1abc9c;
+    box-shadow: 0 0 5px rgba(26,188,156,0.3);
+}
+
+.form-box button {
+    padding: 10px 18px;
+    background: #1abc9c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.form-box button:hover {
+    background: #16a085;
+}
+
+/* Edit Mode */
+#saveBtn.edit-mode {
+    background: #f39c12;
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+#search {
+    width: 250px;
+    padding: 10px;
+    margin: 10px 0 15px 0;
+
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    outline: none;
+}
+
+#search:focus {
+    border-color: #1abc9c;
+}
+
+
+/* =========================
+   TABLE BOX
+========================= */
+.table-box {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+
+    height: calc(100vh - 250px);
+    overflow-y: auto;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+table th {
+    background: #f9f9f9;
+    font-weight: bold;
+}
+
+/* Header ثابت */
+table thead th {
+    position: sticky;
+    top: 0;
+    background: #f9f9f9;
+    z-index: 2;
+}
+
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+table td button {
+    padding: 5px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 2px;
+}
+
+/* Edit */
+.edit-btn {
+    background: #3498db;
+    color: #fff;
+}
+
+/* Delete */
+.delete-btn {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.edit-btn:hover {
+    background: #2980b9;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+}
+
+
+/* =========================
+   SCROLL STYLE
+========================= */
+.table-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-box::-webkit-scrollbar-thumb {
+    background: #1abc9c;
+    border-radius: 10px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+/* =========================
+   RESPONSIVE PRO 🔥
+========================= */
+
+/* Tablet */
+@media (max-width: 992px) {
+
+    .sidebar {
+        width: 180px;
+    }
+
+    .form-box input,
+    .form-box select {
+        min-width: 140px;
+    }
+
+    .table-box {
+        height: auto;
+        max-height: 400px;
+    }
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    /* 🔥 اخفاء السايد بار */
+    .sidebar {
+        display: none;
+    }
+
+    .main {
+        padding: 10px;
+    }
+
+    /* الفورم يبقى عمود */
+    .form-box {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-box input,
+    .form-box select,
+    .form-box button {
+        width: 100%;
+    }
+
+    /* البحث */
+    #search {
+        width: 100%;
+    }
+
+    /* 🔥 الجدول يتحول Scroll أفقي */
+    .table-box {
+        overflow-x: auto;
+        overflow-y: auto;
+        height: auto;
+    }
+
+    table {
+        min-width: 900px; /* مهم جدا */
+    }
+}
+
+
+/* Small Mobile */
+@media (max-width: 480px) {
+
+    .navbar {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .navbar button {
+        width: 100%;
+    }
+
+    .form-box {
+        padding: 10px;
+    }
+
+    .form-box input,
+    .form-box select {
+        font-size: 14px;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin</h2>
+
+        <ul>
+            <li onclick="go('dashboard.html')">🏠 Dashboard</li>
+            <li onclick="go('specialty.html')">🧾 Specialty</li>
+            <li onclick="go('doctors.html')">👨‍⚕️ Doctors</li>
+            <li onclick="go('patients.html')">🧑 Patients</li>
+            <li class="active">📅 Booking</li>
+            <li onclick="go('manage_accounts.html')">⚙️ Accounts</li>
+            <li onclick="go('reports.html')">📊 Reports</li>
+        </ul>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <!-- Navbar -->
+        <div class="navbar">
+            <h3>Manage Booking</h3>
+
+            <button onclick="logout()">
+                Logout
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+
+            <!-- FORM -->
+        <!-- ========================= -->
+        <!-- 🔥 BOOKING FORM -->
+        <!-- ========================= -->
+        <div class="form-box">
+
+            <!-- 🔥 BOOKING ID -->
+            <input
+                type="hidden"
+                id="booking_id"
+            >
+
+            <!-- ========================= -->
+            <!-- 🔥 PATIENT -->
+            <!-- ========================= -->
+            <select id="patient">
+
+                <option value="">
+                    Select Patient
+                </option>
+
+            </select>
+
+            <!-- ========================= -->
+            <!-- 🔥 SPECIALTY -->
+            <!-- ========================= -->
+            <select id="specialty">
+
+                <option value="">
+                    Select Specialty
+                </option>
+
+            </select>
+
+            <!-- ========================= -->
+            <!--  DOCTOR -->
+            <!-- ========================= -->
+            <select id="doctor">
+
+                <option value="">
+                    Select Doctor
+                </option>
+
+            </select>
+
+            <!-- ========================= -->
+            <!--  DATE -->
+            <!-- ========================= -->
+            <select id="appointment_date">
+
+                <option value="">
+                    Select Date
+                </option>
+
+            </select>
+
+            <!-- ========================= -->
+            <!--  TIME -->
+            <!-- ========================= -->
+            <select id="appointment_time">
+
+                <option value="">
+                    Select Time
+                </option>
+
+            </select>
+
+            <!-- ========================= -->
+            <!--  STATUS -->
+            <!-- يظهر فقط وقت التعديل -->
+            <!-- ========================= -->
+            <select
+                id="status"
+                style="display:none;"
+            >
+
+                <option value="Confirmed">
+                    Confirmed
+                </option>
+
+                <option value="Canceled">
+                    Canceled
+                </option>
+
+                <option value="Completed">
+                    Completed
+                </option>
+
+            </select>
+
+            <!-- ========================= -->
+            <!--  NOTES -->
+            <!-- ========================= -->
+            <input
+                type="text"
+                id="notes"
+                placeholder="Notes"
+            >
+
+            <!-- ========================= -->
+            <!--  BUTTON -->
+            <!-- ========================= -->
+            <button
+                id="saveBtn"
+                onclick="saveBooking()"
+            >
+                Save Booking
+            </button>
+
+        </div>
+
+            <!-- Search -->
+            <input
+                type="text"
+                id="search"
+                placeholder="Search..."
+                onkeyup="searchBooking()"
+            >
+
+            <!-- TABLE -->
+            <div class="table-box">
+
+                <h3>
+                    Booking List
+                </h3>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Booking ID
+                            </th>
+
+                            <th>
+                                Patient
+                            </th>
+
+                            <th>
+                                Doctor
+                            </th>
+
+                            <th>
+                                Specialty
+                            </th>
+
+                            <th>
+                                Date & Time
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Notes
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="BookingTable"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/*************************
+ * GLOBAL
+ *************************/
+let isEditing = false;
+
+
+/*************************
+ * LOAD PAGE
+ *************************/
+window.onload = () => {
+
+    loadPatients();
+
+    loadSpecialties();
+
+    loadBookings();
+
+    let status =
+        document.getElementById(
+            "status"
+        );
+
+    if(status){
+
+        status.style.display =
+            "none";
+    }
+};
+
+
+/*************************
+ * LOAD PATIENTS
+ *************************/
+function loadPatients(){
+
+    fetch("php/get_patients.php")
+
+    .then(res => res.json())
+
+    .then(data => {
+
+        let patient =
+            document.getElementById(
+                "patient"
+            );
+
+        patient.innerHTML = `
+            <option value="">
+                Select Patient
+            </option>
+        `;
+
+        data.forEach(p => {
+
+            patient.innerHTML += `
+                <option value="${p.Patient_ID}">
+                    ${p.Name}
+                </option>
+            `;
+        });
+
+    });
+
+}
+
+
+/*************************
+ * LOAD SPECIALTIES
+ *************************/
+function loadSpecialties(){
+
+    fetch("php/get_specialties.php")
+
+    .then(res => res.json())
+
+    .then(data => {
+
+        let specialty =
+            document.getElementById(
+                "specialty"
+            );
+
+        specialty.innerHTML = `
+            <option value="">
+                Select Specialty
+            </option>
+        `;
+
+        data.forEach(s => {
+
+            specialty.innerHTML += `
+                <option value="${s.Specialty_ID}">
+                    ${s.Name}
+                </option>
+            `;
+        });
+
+    });
+
+}
+
+
+/*************************
+ * CHANGE SPECIALTY
+ *************************/
+document.getElementById(
+    "specialty"
+)
+
+.addEventListener(
+    "change",
+
+    function(){
+
+        let specialty_id =
+            this.value;
+
+        fetch(
+            `php/get_doctors_by_specialty.php?specialty_id=${specialty_id}`
+        )
+
+        .then(res => res.json())
+
+        .then(data => {
+
+            let doctor =
+                document.getElementById(
+                    "doctor"
+                );
+
+            doctor.innerHTML = `
+                <option value="">
+                    Select Doctor
+                </option>
+            `;
+
+            data.forEach(d => {
+
+                doctor.innerHTML += `
+                    <option value="${d.Doctor_ID}">
+                        ${d.Name}
+                    </option>
+                `;
+            });
+
+        });
+
+    }
+);
+
+
+/*************************
+ * CHANGE DOCTOR
+ *************************/
+document.getElementById(
+    "doctor"
+)
+
+.addEventListener(
+    "change",
+
+    async function(){
+
+        let doctor_id =
+            this.value;
+
+        if(!doctor_id){
+
+            return;
+        }
+
+        await loadDates(
+            doctor_id
+        );
+
+        // 🔥 اختار أول يوم فقط
+        let dateSelect =
+            document.getElementById(
+                "appointment_date"
+            );
+
+        if(
+            dateSelect.options.length > 1
+        ){
+
+            dateSelect.selectedIndex = 1;
+
+            loadTimes();
+        }
+
+    }
+);
+
+
+/*************************
+ * LOAD DATES
+ *************************/
+async function loadDates(doctor_id){
+
+    let response =
+        await fetch(
+            "php/get_workdays.php?doctor_id="
+            +
+            doctor_id
+        );
+
+    let data =
+        await response.json();
+
+    let dateSelect =
+        document.getElementById(
+            "appointment_date"
+        );
+
+    // 🔥 reset
+    dateSelect.innerHTML = `
+        <option value="">
+            Select Date
+        </option>
+    `;
+
+    // 🔥 أسبوع واحد فقط
+    for(let i = 0; i < 7; i++){
+
+        let current =
+            new Date();
+
+        current.setDate(
+            current.getDate() + i
+        );
+
+        let currentDay =
+            current.toLocaleDateString(
+                "en-US",
+                { weekday:"long" }
+            );
+
+        let yyyy =
+            current.getFullYear();
+
+        let mm =
+            String(
+                current.getMonth() + 1
+            ).padStart(2,'0');
+
+        let dd =
+            String(
+                current.getDate()
+            ).padStart(2,'0');
+
+        let fullDate =
+            `${yyyy}-${mm}-${dd}`;
+
+        data.forEach(item => {
+
+            if(
+                item.Work_Day
+                ===
+                currentDay
+            ){
+
+                dateSelect.innerHTML += `
+                    <option value="${fullDate}">
+                        ${currentDay}
+                        (${fullDate})
+                    </option>
+                `;
+            }
+
+        });
+    }
+
+    return true;
+}
+
+
+/*************************
+ * LOAD TIMES
+ *************************/
+function loadTimes(){
+
+    let dateSelect =
+        document.getElementById(
+            "appointment_date"
+        );
+
+    let doctorSelect =
+        document.getElementById(
+            "doctor"
+        );
+
+    let timeSelect =
+        document.getElementById(
+            "appointment_time"
+        );
+
+    let date =
+        dateSelect.value;
+
+    let doctor_id =
+        doctorSelect.value;
+
+    // 🔥 reset
+    timeSelect.innerHTML = `
+        <option value="">
+            Select Time
+        </option>
+    `;
+
+    if(!date || !doctor_id){
+
+        return;
+    }
+
+    fetch(
+        "php/get_available_times.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+
+                doctor_id:doctor_id,
+
+                date:date
+            })
+        }
+    )
+
+    .then(res => res.json())
+
+    .then(data => {
+
+        console.log(
+            "TIMES:",
+            data
+        );
+
+        // 🔥 لو edit متغيرش اليوم
+        if(isEditing){
+
+            fillTimes(
+                data,
+                date,
+                timeSelect
+            );
+
+            return;
+        }
+
+        // 🔥 لو مفيش مواعيد خالص
+        if(
+            !Array.isArray(data)
+            ||
+            data.length === 0
+        ){
+
+            moveToNextWeek();
+
+            return;
+        }
+
+        fillTimes(
+            data,
+            date,
+            timeSelect
+        );
+
+    });
+
+}
+
+
+/*************************
+ * FILL TIMES
+ *************************/
+function fillTimes(
+    data,
+    date,
+    timeSelect
+){
+
+    let now =
+        new Date();
+
+    let selectedDate =
+        new Date(date);
+
+    let validCount = 0;
+
+    data.forEach(t => {
+
+        let [h,m] =
+            t.split(":");
+
+        let slot =
+            new Date(date);
+
+        slot.setHours(
+            h,
+            m,
+            0,
+            0
+        );
+
+        // 🔥 امنع الوقت القديم فقط
+        if(
+
+            selectedDate.toDateString()
+            ===
+            now.toDateString()
+
+        ){
+
+            if(slot <= now){
+
+                return;
+            }
+        }
+
+        validCount++;
+
+        timeSelect.innerHTML += `
+            <option value="${t}">
+                ${formatTime(t)}
+            </option>
+        `;
+    });
+
+    // 🔥 لو كل الوقت عدى
+    if(
+        validCount === 0
+        &&
+        !isEditing
+    ){
+
+        moveToNextWeek();
+    }
+}
+
+
+/*************************
+ * MOVE TO NEXT WEEK
+ *************************/
+function moveToNextWeek(){
+
+    // 🔥 ممنوع يغير التاريخ وقت الـ edit
+    if(isEditing){
+
+        return;
+    }
+
+    let dateSelect =
+        document.getElementById(
+            "appointment_date"
+        );
+
+    if(!dateSelect.value){
+
+        return;
+    }
+
+    let currentDate =
+        new Date(
+            dateSelect.value
+        );
+
+    // 🔥 الأسبوع الجاي
+    currentDate.setDate(
+        currentDate.getDate() + 7
+    );
+
+    let yyyy =
+        currentDate.getFullYear();
+
+    let mm =
+        String(
+            currentDate.getMonth() + 1
+        ).padStart(2,"0");
+
+    let dd =
+        String(
+            currentDate.getDate()
+        ).padStart(2,"0");
+
+    let nextDate =
+        `${yyyy}-${mm}-${dd}`;
+
+    let dayName =
+        currentDate.toLocaleDateString(
+            "en-US",
+            {
+                weekday:"long"
+            }
+        );
+
+    // 🔥 امسح القديم
+    dateSelect.innerHTML = "";
+
+    // 🔥 ضيف الجديد فقط
+    let option =
+        document.createElement(
+            "option"
+        );
+
+    option.value =
+        nextDate;
+
+    option.textContent =
+        `${dayName} (${nextDate})`;
+
+    option.selected = true;
+
+    dateSelect.appendChild(
+        option
+    );
+
+    // 🔥 حدث القيمة
+    dateSelect.value =
+        nextDate;
+
+    console.log(
+        "Moved To:",
+        nextDate
+    );
+
+    // 🔥 حمل الأوقات الجديدة
+    setTimeout(() => {
+
+        loadTimes();
+
+    },100);
+}
+
+/*************************
+ * CHANGE DATE
+ *************************/
+document.getElementById(
+    "appointment_date"
+)
+
+.addEventListener(
+    "change",
+
+    function(){
+
+        loadTimes();
+    }
+);
+
+
+/*************************
+ * FORMAT TIME
+ *************************/
+function formatTime(time){
+
+    let parts =
+        time.split(":");
+
+    let hour =
+        parseInt(parts[0]);
+
+    let min =
+        parts[1];
+
+    let ampm =
+        hour >= 12
+        ?
+        "PM"
+        :
+        "AM";
+
+    hour =
+        hour % 12;
+
+    if(hour === 0){
+
+        hour = 12;
+    }
+
+    return `
+        ${hour}:${min} ${ampm}
+    `;
+}
+
+
+/*************************
+ * SAVE BOOKING
+ *************************/
+function saveBooking(){
+
+    let bookingInput =
+        document.getElementById(
+            "booking_id"
+        );
+
+    let statusInput =
+        document.getElementById(
+            "status"
+        );
+
+    let patient_id =
+        document.getElementById(
+            "patient"
+        ).value;
+
+    let doctor_id =
+        document.getElementById(
+            "doctor"
+        ).value;
+
+    let date =
+        document.getElementById(
+            "appointment_date"
+        ).value;
+
+    let time =
+        document.getElementById(
+            "appointment_time"
+        ).value;
+
+    let notes =
+        document.getElementById(
+            "notes"
+        ).value;
+
+    let booking_id =
+        bookingInput
+        ?
+        bookingInput.value
+        :
+        "";
+
+    let bookingStatus =
+        "Confirmed";
+
+    if(
+        booking_id
+        &&
+        statusInput
+    ){
+
+        bookingStatus =
+            statusInput.value;
+    }
+
+    if(
+        !patient_id
+        ||
+        !doctor_id
+        ||
+        !date
+        ||
+        !time
+    ){
+
+        alert(
+            "Complete all fields ❌"
+        );
+
+        return;
+    }
+
+    let bookingDateTime =
+        date + " " + time + ":00";
+
+    let formData =
+        new FormData();
+
+    formData.append(
+        "patient_id",
+        patient_id
+    );
+
+    formData.append(
+        "doctor_id",
+        doctor_id
+    );
+
+    formData.append(
+        "booking_date",
+        bookingDateTime
+    );
+
+    formData.append(
+        "status",
+        bookingStatus
+    );
+
+    formData.append(
+        "notes",
+        notes
+    );
+
+    let url =
+        "php/add_booking.php";
+
+    // 🔥 update
+    if(booking_id){
+
+        url =
+            "php/update_booking.php";
+
+        formData.append(
+            "booking_id",
+            booking_id
+        );
+    }
+
+    fetch(url,{
+
+        method:"POST",
+
+        body:formData
+
+    })
+
+    .then(res => res.text())
+
+    .then(msg => {
+
+        console.log(msg);
+
+        if(
+            msg === "success"
+            ||
+            msg === "updated"
+        ){
+
+            alert(
+                "Booking saved ✅"
+            );
+
+            resetBookingForm();
+
+            loadBookings();
+        }
+
+        else if(
+            msg === "already_booked"
+        ){
+
+            alert(
+                "This patient already has confirmed booking with this doctor ❌"
+            );
+        }
+
+        else{
+
+            alert(
+                "Save failed ❌"
+            );
+        }
+
+    });
+
+}
+
+/*************************
+ * LOAD BOOKINGS
+ *************************/
+function loadBookings(){
+
+    fetch(
+        "php/get_bookings.php"
+    )
+
+    .then(res => res.json())
+
+    .then(data => {
+
+        let table =
+            document.getElementById(
+                "BookingTable"
+            );
+
+        table.innerHTML = "";
+
+        // 🔥 اعرض Confirmed فقط
+        let confirmedBookings =
+            data.filter(b =>
+
+                b.Status &&
+                b.Status.toLowerCase() === "confirmed"
+            );
+
+        // 🔥 لو مفيش حجوزات
+        if(confirmedBookings.length === 0){
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td colspan="8">
+                        No Confirmed Bookings
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+        }
+
+        confirmedBookings.forEach(b => {
+
+            let bookingDate =
+                b.Booking_Date
+                ?
+                b.Booking_Date
+                :
+                "-";
+
+            table.innerHTML += `
+
+            <tr>
+
+                <td>
+                    ${b.Booking_ID}
+                </td>
+
+                <td>
+                    ${b.Patient_Name}
+                </td>
+
+                <td>
+                    ${b.Doctor_Name}
+                </td>
+
+                <td>
+                    ${b.Specialty_Name}
+                </td>
+
+                <td>
+                    ${bookingDate}
+                </td>
+
+                <td>
+                    ${b.Status}
+                </td>
+
+                <td>
+                    ${b.Notes ?? ""}
+                </td>
+
+                <td>
+
+                    <button
+                        onclick='editBooking(${JSON.stringify(b)})'
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        onclick='deleteBooking(${b.Booking_ID})'
+                    >
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+            `;
+        });
+
+    });
+
+}
+
+
+/*************************
+ * EDIT BOOKING
+ *************************/
+function editBooking(b){
+
+    isEditing = true;
+
+    document.getElementById(
+        "booking_id"
+    ).value = b.Booking_ID;
+
+    document.getElementById(
+        "patient"
+    ).value = b.Patient_ID;
+
+    document.getElementById(
+        "specialty"
+    ).value = b.Specialty_ID;
+
+    document.getElementById(
+        "notes"
+    ).value =
+        b.Notes ?? "";
+
+    document.getElementById(
+        "status"
+    ).style.display =
+        "block";
+
+    document.getElementById(
+        "status"
+    ).value =
+        b.Status;
+
+    document.getElementById(
+        "saveBtn"
+    ).innerText =
+        "Update Booking";
+
+    // 🔥 doctor
+    fetch(
+        `php/get_doctors_by_specialty.php?specialty_id=${b.Specialty_ID}`
+    )
+
+    .then(res => res.json())
+
+    .then(doctors => {
+
+        let doctor =
+            document.getElementById(
+                "doctor"
+            );
+
+        doctor.innerHTML = `
+            <option value="">
+                Select Doctor
+            </option>
+        `;
+
+        doctors.forEach(d => {
+
+            doctor.innerHTML += `
+                <option value="${d.Doctor_ID}">
+                    ${d.Name}
+                </option>
+            `;
+        });
+
+        doctor.value =
+            b.Doctor_ID;
+
+        return loadDates(
+            b.Doctor_ID
+        );
+    })
+
+    .then(() => {
+
+        let dateSelect =
+            document.getElementById(
+                "appointment_date"
+            );
+
+        let onlyDate =
+            b.Booking_Date
+            .split(" ")[0];
+
+        let dayName =
+            new Date(onlyDate)
+            .toLocaleDateString(
+                "en-US",
+                {
+                    weekday:"long"
+                }
+            );
+
+        // 🔥 ضيف التاريخ لو مش موجود
+        let exists = false;
+
+        Array.from(
+            dateSelect.options
+        ).forEach(option => {
+
+            if(
+                option.value.trim()
+                ===
+                onlyDate.trim()
+            ){
+
+                exists = true;
+            }
+        });
+
+        if(!exists){
+
+            let option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                onlyDate;
+
+            option.textContent =
+                `${dayName} (${onlyDate})`;
+
+            dateSelect.appendChild(
+                option
+            );
+        }
+
+        // 🔥 اختار التاريخ
+        dateSelect.value =
+            onlyDate;
+
+        // 🔥 حمل الأوقات
+        loadTimes();
+
+        // 🔥 الوقت
+        setTimeout(() => {
+
+            let fullTime =
+                b.Booking_Date
+                .split(" ")[1];
+
+            let time =
+                fullTime.slice(0,5);
+
+            let timeSelect =
+                document.getElementById(
+                    "appointment_time"
+                );
+
+            let exists = false;
+
+            Array.from(
+                timeSelect.options
+            ).forEach(option => {
+
+                if(
+                    option.value === time
+                ){
+
+                    exists = true;
+                }
+            });
+
+            if(!exists){
+
+                let option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    time;
+
+                option.textContent =
+                    formatTime(time);
+
+                timeSelect.appendChild(
+                    option
+                );
+            }
+
+            timeSelect.value =
+                time;
+
+        setTimeout(() => {
+
+            isEditing = false;
+
+        },1000);
+
+        },500);
+
+    });
+
+}
+
+
+/*************************
+ * DELETE BOOKING
+ *************************/
+function deleteBooking(id){
+
+    if(
+        !confirm(
+            "Delete booking ?"
+        )
+    ) return;
+
+    fetch(
+        `php/delete_booking.php?id=${id}`
+    )
+
+    .then(res => res.text())
+
+    .then(msg => {
+
+        if(msg === "success"){
+
+            alert(
+                "Deleted successfully ✅"
+            );
+
+            loadBookings();
+        }
+
+    });
+
+}
+
+
+/*************************
+ * SEARCH
+ *************************/
+function searchBooking(){
+
+    let value =
+        document.getElementById(
+            "search"
+        )
+
+        .value
+        .toLowerCase();
+
+    let rows =
+        document.querySelectorAll(
+            "#BookingTable tr"
+        );
+
+    rows.forEach(row => {
+
+        row.style.display =
+
+            row.innerText
+            .toLowerCase()
+            .includes(value)
+
+            ?
+
+            ""
+
+            :
+
+            "none";
+
+    });
+
+}
+
+
+/*************************
+ * RESET FORM
+ *************************/
+function resetBookingForm(){
+
+    isEditing = false;
+
+    document.getElementById(
+        "booking_id"
+    ).value = "";
+
+    document.getElementById(
+        "patient"
+    ).value = "";
+
+    document.getElementById(
+        "specialty"
+    ).value = "";
+
+    document.getElementById(
+        "doctor"
+    ).innerHTML = `
+        <option value="">
+            Select Doctor
+        </option>
+    `;
+
+    document.getElementById(
+        "appointment_date"
+    ).innerHTML = `
+        <option value="">
+            Select Date
+        </option>
+    `;
+
+    document.getElementById(
+        "appointment_time"
+    ).innerHTML = `
+        <option value="">
+            Select Time
+        </option>
+    `;
+
+    document.getElementById(
+        "notes"
+    ).value = "";
+
+    document.getElementById(
+        "status"
+    ).style.display = "none";
+
+    document.getElementById(
+        "status"
+    ).value = "Confirmed";
+
+    document.getElementById(
+        "saveBtn"
+    ).innerText = "Save Booking";
+}
+
+
+/*************************
+ * GO
+ *************************/
+function go(page){
+
+    window.location.href = page;
+}
+
+
+/*************************
+ * LOGOUT
+ *************************/
+function logout(){
+
+    window.location.href =
+        "login.html";
+}
+
+
+/*************************
+ * GET NEXT DATE
+ *************************/
+function getNextDate(dayName){
+
+    const days = {
+
+        Sunday:0,
+        Monday:1,
+        Tuesday:2,
+        Wednesday:3,
+        Thursday:4,
+        Friday:5,
+        Saturday:6
+    };
+
+    let today =
+        new Date();
+
+    today.setHours(
+        0,0,0,0
+    );
+
+    let result =
+        new Date(today);
+
+    let targetDay =
+        days[dayName];
+
+    let diff =
+        targetDay
+        -
+        today.getDay();
+
+    // 🔥 لو اليوم عدى
+    if(diff < 0){
+
+        diff += 7;
+    }
+
+    result.setDate(
+        today.getDate() + diff
+    );
+
+    let yyyy =
+        result.getFullYear();
+
+    let mm =
+        String(
+            result.getMonth() + 1
+        ).padStart(2,'0');
+
+    let dd =
+        String(
+            result.getDate()
+        ).padStart(2,'0');
+
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+</script>
+
+</body>
+</html>

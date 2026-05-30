@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Verify OTP</title>
+
+<style>
+
+body{
+
+    margin:0;
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-family:Poppins,sans-serif;
+
+    background:
+    linear-gradient(
+        135deg,
+        #00c6ff,
+        #0072ff
+    );
+}
+
+.otp-box{
+
+    width:380px;
+
+    background:#fff;
+
+    padding:40px;
+
+    border-radius:24px;
+
+    text-align:center;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.2);
+}
+
+.icon{
+
+    width:80px;
+    height:80px;
+
+    margin:auto;
+    margin-bottom:20px;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        #1e3a8a,
+        #0ea5e9
+    );
+
+    color:#fff;
+
+    font-size:34px;
+}
+
+h2{
+
+    margin-bottom:10px;
+}
+
+p{
+
+    color:#64748b;
+    margin-bottom:25px;
+}
+
+input{
+
+    width:90%;
+
+    padding:15px;
+
+    border-radius:14px;
+
+    border:1px solid #cbd5e1;
+
+    outline:none;
+
+    text-align:center;
+
+    font-size:28px;
+
+    letter-spacing:10px;
+
+    transition:.3s;
+}
+
+input:focus{
+
+    border-color:#0ea5e9;
+
+    box-shadow:
+        0 0 10px rgba(14,165,233,.2);
+}
+
+button{
+
+    width:100%;
+
+    margin-top:25px;
+
+    border:none;
+
+    padding:15px;
+
+    border-radius:14px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #1e3a8a,
+        #0ea5e9
+    );
+
+    color:#fff;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+button:hover{
+
+    transform:translateY(-2px);
+}
+
+#msg{
+
+    margin-top:18px;
+
+    font-weight:600;
+}
+
+/* CLOSE BUTTON */
+.otp-close{
+
+    position:absolute;
+    top:18px;
+    right:18px;
+
+    width:38px;
+    height:38px;
+
+    border:none;
+    border-radius:50%;
+
+    background:#fee2e2;
+    color:#dc2626;
+
+    font-size:18px;
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.otp-close:hover{
+
+    background:#dc2626;
+    color:#fff;
+
+    transform:rotate(90deg);
+}
+
+/* OTP BOX */
+.otp-box{
+
+    position:relative;
+}
+
+/* RESEND */
+.resend-btn{
+
+    margin-top:15px !important;
+
+    background:#fff !important;
+    color:#2563eb !important;
+
+    border:2px solid #2563eb !important;
+}
+
+.resend-btn:hover{
+
+    background:#2563eb !important;
+    color:#fff !important;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="otpPopup" class="otp-popup">
+
+    <div class="otp-box">
+
+        <!-- CLOSE -->
+        <button
+            class="otp-close"
+            onclick="closeOtpPopup()"
+        >
+            ✕
+        </button>
+
+        <div class="icon">
+            🔐
+        </div>
+
+        <h2>Verify OTP</h2>
+
+        <p>
+            Enter the 6-digit code sent to your email
+        </p>
+
+        <input
+            type="text"
+            id="otpInput"
+            maxlength="6"
+            placeholder="------"
+            oninput="autoVerifyOTP()"
+        >
+
+        <button id="verifyBtn" onclick="verifyOTP()">
+            Verify OTP
+        </button>
+
+        <!-- RESEND -->
+        <button
+            class="resend-btn"
+            onclick="resendOTP()"
+        >
+            Resend OTP
+        </button>
+
+        <p id="otpMsg"></p>
+
+    </div>
+
+</div>
+<script>
+
+function verifyOTP(){
+
+    const otp =
+        document.getElementById(
+            "otpInput"
+        ).value.trim();
+
+    const doctor_id =
+        sessionStorage.getItem(
+            "otp_doctor_id"
+        );
+
+    const msg =
+        document.getElementById(
+            "otpMsg"
+        );
+
+    const btn =
+        document.getElementById(
+            "verifyBtn"
+        );
+
+    // VALIDATION
+    if(otp.length !== 6){
+
+        msg.style.color = "red";
+
+        msg.innerText =
+            "Enter valid OTP";
+
+        return;
+    }
+
+    // LOADING
+    btn.disabled = true;
+
+    btn.innerText =
+        "Verifying...";
+
+    // REQUEST
+    fetch(
+        "../doctor_page/verify_doctor_otp.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+
+                doctor_id,
+                otp
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        console.log(
+            "VERIFY OTP:",
+            data
+        );
+
+        if(data.status === "success"){
+
+            // LOGIN
+            sessionStorage.setItem(
+                "doctor_logged_in",
+                "true"
+            );
+
+            // SAVE DOCTOR
+            sessionStorage.setItem(
+                "doctor_data",
+                JSON.stringify(data.user)
+            );
+
+            localStorage.setItem(
+                "doctor",
+                JSON.stringify(data.user)
+            );
+
+            // REMOVE TEMP OTP ID
+            sessionStorage.removeItem(
+                "otp_doctor_id"
+            );
+
+            msg.style.color =
+                "#16a34a";
+
+            msg.innerText =
+                "OTP verified successfully";
+
+            // REDIRECT
+            setTimeout(()=>{
+
+                window.location.replace(
+                    "doctor_dashboard.html"
+                );
+
+            },800);
+
+        }else{
+
+            msg.style.color =
+                "red";
+
+            msg.innerText =
+                data.message;
+        }
+
+        btn.disabled = false;
+
+        btn.innerText =
+            "Verify OTP";
+    })
+
+    .catch(err=>{
+
+        console.log(
+            "VERIFY ERROR:",
+            err
+        );
+
+        msg.style.color =
+            "red";
+
+        msg.innerText =
+            "Server Error";
+    });
+}
+
+function autoVerifyOTP(){
+
+    const otp =
+        document.getElementById(
+            "otpInput"
+        ).value.trim();
+
+    // يشيل أي حاجة غير أرقام
+    document.getElementById(
+        "otpInput"
+    ).value =
+        otp.replace(/\D/g,'');
+
+    // لو 6 أرقام
+    if(otp.length === 6){
+
+        verifyOTP();
+    }
+}
+
+function closeOtpPopup(){
+
+    // امسح OTP
+    document.getElementById(
+        "otpInput"
+    ).value = "";
+
+    // امسح الـ session
+    sessionStorage.removeItem(
+        "otp_doctor_id"
+    );
+
+    // رجوع لصفحة اللوجين
+    window.location.replace(
+        "login_doctor.html"
+    );
+}
+
+function resendOTP(){
+
+    const doctor_id =
+        sessionStorage.getItem(
+            "otp_doctor_id"
+        );
+
+    if(!doctor_id){
+
+        return;
+    }
+
+    fetch(
+        "../doctor_page/resend_doctor_otp.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+
+                doctor_id
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        const msg =
+            document.getElementById(
+                "otpMsg"
+            );
+
+        if(data.status === "success"){
+
+            msg.style.color =
+                "#16a34a";
+
+            msg.innerText =
+                "OTP resent successfully";
+
+        }else{
+
+            msg.style.color =
+                "red";
+
+            msg.innerText =
+                data.message;
+        }
+    });
+}
+</script>
+
+</body>
+</html>

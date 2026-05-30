@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medino Login</title>
+
+
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+    *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+/* NAVBAR */
+.navbar{
+    position:fixed;
+    width:100%;
+    top:0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 40px;
+    background:rgba(255,255,255,0.8);
+    backdrop-filter:blur(10px);
+}
+
+/* زرار اللغة */
+.lang-btn{
+    position:absolute;
+    left:50%;
+    background:linear-gradient(45deg,#2a7bff,#00c6ff);
+    color:#fff;
+    border:none;
+    padding:6px 15px;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+.btn-outline {
+    transition: 0.3s;
+}
+
+.btn-outline:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+}
+
+/* Glow effect */
+.btn-primary::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: -100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: 0.5s;
+}
+
+.btn-primary:hover::after {
+    left: 100%;
+}
+
+
+/* RTL */
+body[dir="rtl"] .lang-btn{
+    left:auto;
+    right:50%;
+    
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo img{
+    width:150px;
+}
+
+.nav-right{
+    display:flex;
+    gap:10px;
+}
+
+.btn-primary{
+    background:linear-gradient(45deg,#2a7bff,#00c6ff);
+    border:none;
+    padding:10px 20px;
+    color:#fff;
+    border-radius:25px;
+    cursor:pointer;
+}
+
+.btn-outline{
+    border:2px solid #2a7bff;
+    padding:10px 20px;
+    border-radius:25px;
+    background:#fff;
+    cursor:pointer;
+}
+
+/* LOGIN */
+.login-section{
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f5f7fb;
+}
+
+/* 🔷 LOGIN CONTAINER */
+.login-container{
+    width:90%;
+    max-width:1100px;
+    display:flex;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(0,0,0,0.08);
+    background:#fff;
+}
+
+/* 🔷 LEFT SIDE */
+.login-card{
+    width:50%;
+    padding:60px 50px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+/* TITLE */
+.login-card h2{
+    font-size:30px;
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.login-card p{
+    color:#777;
+    margin-bottom:30px;
+}
+
+/* 🔷 INPUT */
+.input-group{
+    margin-bottom:20px;
+}
+
+.input-group label{
+    display:block;
+    font-weight:500;
+    margin-bottom:6px;
+}
+
+.input-group input{
+    width:100%;
+    padding:14px 15px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    font-size:14px;
+    transition:0.3s;
+}
+
+/* زرار انشاء اميل جديد */
+/* 🔻 Extra Links */
+.extra-links {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* النص */
+.extra-links p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+/* زرار Create Account */
+.signup-btn {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #0072ff;
+    border-bottom: 2px solid transparent;
+
+    transition: 0.3s;
+}
+
+/* Hover */
+.signup-btn:hover {
+    color: #00c6ff;
+    border-color: #00c6ff;
+}
+
+/* 🔥 FOCUS EFFECT */
+.input-group input:focus{
+    border-color:#2a7bff;
+    box-shadow:0 0 0 3px rgba(42,123,255,0.1);
+    outline:none;
+}
+
+/* 🔷 OPTIONS */
+.options{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:14px;
+    margin-bottom:25px;
+}
+
+.options a{
+    color:#2a7bff;
+    text-decoration:none;
+    transition:0.3s;
+}
+
+.options a:hover{
+    text-decoration:underline;
+}
+
+/* 🔷 BUTTON */
+.login-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(45deg,#2a7bff,#00c6ff);
+    color:#fff;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+/* 🔥 BUTTON HOVER */
+.login-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(0,198,255,0.3);
+}
+
+/* 🔷 RIGHT SIDE IMAGE */
+.login-image{
+    width:50%;
+    position:relative;
+}
+
+/* Overlay */
+.login-image::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(45deg, rgb(42 123 255 / 17%), rgb(0 198 255 / 30%));
+}
+
+/* IMAGE */
+.login-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* 🔷 RESPONSIVE */
+@media (max-width: 900px){
+
+    /* الكونتينر */
+    .login-container{
+        flex-direction: column;
+        width: 95%;
+        border-radius: 15px;
+    }
+
+    /* الفورم */
+    .login-card{
+        width: 100%;
+        padding: 30px 20px;
+    }
+
+    /* الصورة */
+    .login-image{
+        width: 100%;
+        height: 200px;
+        display: none;
+    }
+
+    .login-image img{
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* نخلي الصورة soft مش مزعجة */
+    .login-image::after{
+        background: rgba(0,0,0,0.1);
+    }
+
+    /* تقليل حجم العنوان */
+    .login-card h2{
+        font-size: 24px;
+    }
+}   
+
+@media (max-width: 700px){
+
+    .navbar{
+        padding: 10px 15px;
+    }
+
+    .nav-right{
+        gap: 5px;
+    }
+
+    .btn-primary,
+    .btn-outline{
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .lang-btn{
+        padding: 5px 10px;
+        font-size: 12px;
+        top: 58px;
+        left: 4%;
+    }
+   body[dir="rtl"] .lang-btn {
+    right: auto;
+    top: 58px;
+    left: 4%;
+   }
+
+}
+
+
+
+/* RTL fix */
+body[dir="rtl"] .login-card{
+    text-align:right;
+}
+
+.options{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.login-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:linear-gradient(45deg,#2a7bff,#00c6ff);
+    color:#fff;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* IMAGE */
+.login-image{
+    width:50%;
+}
+
+.login-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+    .login-container{
+        flex-direction:column;
+    }
+    .login-card,.login-image{
+        width:100%;
+    }
+}
+
+/* FORGOT OTP */
+.forgot-otp-wrapper{
+   direction: ltr;
+   text-align: center;
+   display:flex;
+   justify-content:center;
+   gap:12px;
+   margin-top:18px;
+}
+
+.forgot-otp-input{
+    direction: ltr;
+    
+    width:65px;
+    height:70px;
+
+    border-radius:18px;
+
+    border:2px solid #dbeafe;
+
+    text-align:center;
+
+    font-size:30px;
+
+    font-weight:bold;
+
+    outline:none;
+
+    transition:.3s;
+}
+
+.verify-account-otp{
+
+    width:65px;
+
+    height:70px;
+
+    border-radius:18px;
+
+    border:2px solid #dbeafe;
+
+    text-align:center;
+
+    font-size:30px;
+
+    font-weight:bold;
+
+    outline:none;
+
+    transition:.3s;
+}
+
+.verify-account-otp:focus{
+
+    border-color:#0ea5e9;
+
+    box-shadow:
+        0 0 15px rgba(14,165,233,.25);
+}
+
+.forgot-otp-input:focus{
+
+    border-color:#0ea5e9;
+
+    box-shadow:
+        0 0 15px rgba(14,165,233,.25);
+
+    transform:translateY(-2px);
+}
+
+@keyframes shake{
+
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    50%{transform:translateX(5px);}
+    75%{transform:translateX(-5px);}
+    100%{transform:translateX(0);}
+}
+
+.shake{
+
+    animation:shake .3s;
+}
+</style>
+
+</head>
+
+<body id="body">
+
+<!-- 🔷 NAVBAR -->
+<header class="navbar">
+
+    <button id="langBtn" class="lang-btn">AR</button>
+
+    <div class="logo">
+        <a href="./Home.html">
+            <img src="assets/images/logo/smart_care_clinic_fixed_quality.png">
+        </a>
+    </div>
+
+    <div class="nav-right">
+        <button id="adminBtn" class="btn-outline" data-lang="admin_login">
+            Admin Login
+        </button>
+
+        <button id="doctorBtn" class="btn-primary" data-lang="doctor_login">
+            Doctor Login
+        </button>
+    </div>
+
+</header>
+
+
+<!-- 🔷 LOGIN -->
+<section class="login-section">
+
+    <div class="login-container">
+
+        <!-- FORM -->
+        <div class="login-card">
+
+            <h2 data-lang="login_title">
+                Welcome Back
+            </h2>
+
+            <p data-lang="login_sub">
+                Login to access your dashboard
+            </p>
+
+            <form onsubmit="login(event)">
+
+                <!-- EMAIL -->
+                <div class="input-group">
+                    <label data-lang="email">
+                        Email
+                    </label>
+
+                    <input
+                        type="text"
+                        id="emailInput"
+                        placeholder="Enter your email"
+                    >
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="input-group">
+                    <label data-lang="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="passInput"
+                        placeholder="Enter your password"
+                    >
+                </div>
+
+                <!-- OPTIONS -->
+                <div class="options">
+
+                    <label>
+                        <input type="checkbox">
+
+                        <span data-lang="remember">
+                            Remember Me
+                        </span>
+                    </label>
+
+                    <a
+                        href="#"
+                        onclick="openForgotPopup()"
+                        data-lang="forgot"
+                    >
+                        Forgot Password?
+                    </a>
+
+                </div>
+
+                <!-- LOGIN BTN -->
+                <button
+                    class="login-btn"
+                    data-lang="login_btn"
+                >
+                    Login
+                </button>
+
+                <!-- SIGNUP -->
+                <div class="extra-links">
+
+                    <p data-lang="no_account">
+                        Don't have an account?
+                    </p>
+
+                    <a
+                        href="register.html"
+                        class="signup-btn"
+                        data-lang="signup"
+                    >
+                        Create New Account
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- IMAGE -->
+        <div class="login-image">
+            <img src="assets/images/patient.jpg">
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 🔥 STEP 1 : EMAIL POPUP -->
+<!-- ===================================================== -->
+
+<div
+    id="forgotPopup"
+
+    style="
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.6);
+        display:none;
+        justify-content:center;
+        align-items:center;
+        z-index:99999;
+        padding:20px;
+    "
+>
+
+    <div
+        style="
+            width:100%;
+            max-width:480px;
+            background:#fff;
+            border-radius:28px;
+            padding:40px;
+            position:relative;
+            box-shadow:0 20px 60px rgba(0,0,0,.2);
+        "
+    >
+
+        <!-- CLOSE -->
+        <button
+            onclick="closeForgotPopup()"
+
+            style="
+                position:absolute;
+                top:18px;
+                right:18px;
+                width:42px;
+                height:42px;
+                border:none;
+                border-radius:50%;
+                background:#ef4444;
+                color:#fff;
+                font-size:20px;
+                cursor:pointer;
+            "
+        >
+            ✕
+        </button>
+
+        <!-- ICON -->
+        <div
+            style="
+                width:90px;
+                height:90px;
+                margin:auto;
+                border-radius:50%;
+                background:linear-gradient(135deg,#1e3a8a,#0ea5e9);
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                color:#fff;
+                font-size:40px;
+                margin-bottom:25px;
+            "
+        >
+            📧
+        </div>
+
+        <h2
+            style="
+                text-align:center;
+                color:#1e3a8a;
+                margin-bottom:10px;
+            "
+            data-lang="forgot_title"
+        >
+            Forgot Password
+        </h2>
+
+        <p
+            style="
+                text-align:center;
+                color:#64748b;
+                margin-bottom:30px;
+            "
+            data-lang="forgot_sub"
+        >
+            Enter your email to receive OTP
+        </p>
+
+        <!-- EMAIL -->
+        <input
+
+            type="email"
+
+            id="resetEmail"
+
+            data-placeholder="forgot_email_placeholder"
+            placeholder="Enter your email"
+
+            style="
+                width:100%;
+                height:58px;
+                border-radius:16px;
+                border:2px solid #dbeafe;
+                padding:0 18px;
+                font-size:15px;
+                margin-bottom:22px;
+                outline:none;
+            "
+        >
+
+        <!-- BTN -->
+        <button
+
+            id="sendCodeBtn"
+
+            onclick="sendResetCode()"
+
+            style="
+                width:100%;
+                padding:16px;
+                border:none;
+                border-radius:16px;
+                background:linear-gradient(90deg,#1e3a8a,#0ea5e9);
+                color:#fff;
+                font-size:16px;
+                font-weight:600;
+                cursor:pointer;
+            "
+            data-lang="send_otp"
+        >
+            Send OTP
+        </button>
+
+        <!-- MSG -->
+        <p
+            id="forgotMsg"
+
+            style="
+                margin-top:18px;
+                text-align:center;
+                color:red;
+            "
+        ></p>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- 🔥 STEP 2 : OTP POPUP -->
+<!-- ===================================================== -->
+
+<div
+    id="otpPopup"
+
+    style="
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.6);
+        display:none;
+        justify-content:center;
+        align-items:center;
+        z-index:999999;
+        padding:20px;
+    "
+>
+
+    <div
+        style="
+            width:100%;
+            max-width:480px;
+            background:#fff;
+            border-radius:28px;
+            padding:40px;
+            position:relative;
+            box-shadow:0 20px 60px rgba(0,0,0,.2);
+        "
+    >
+
+        <!-- CLOSE -->
+        <button
+
+            onclick="closeOtpPopup()"
+
+            style="
+                position:absolute;
+                top:18px;
+                right:18px;
+                width:42px;
+                height:42px;
+                border:none;
+                border-radius:50%;
+                background:#ef4444;
+                color:#fff;
+                font-size:20px;
+                cursor:pointer;
+            "
+        >
+            ✕
+        </button>
+
+        <!-- ICON -->
+        <div
+            style="
+                width:90px;
+                height:90px;
+                margin:auto;
+                border-radius:50%;
+                background:linear-gradient(135deg,#1e3a8a,#0ea5e9);
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                color:#fff;
+                font-size:40px;
+                margin-bottom:25px;
+            "
+        >
+            ✉️
+        </div>
+
+        <!-- TITLE -->
+        <h2
+            style="
+                text-align:center;
+                color:#1e3a8a;
+                margin-bottom:10px;
+            "
+            data-lang="verified_title"
+        >
+            Verify OTP
+        </h2>
+
+        <p
+            style="
+                text-align:center;
+                color:#64748b;
+                margin-bottom:25px;
+            "
+            data-lang="verify_sub"
+        >
+            Enter the 4-digit code sent to your email
+        </p>
+
+        <!-- OTP -->
+        <div class="forgot-otp-wrapper">
+
+            <input
+                type="text"
+                class="forgot-otp-input"
+                maxlength="1"
+            >
+
+            <input
+                type="text"
+                class="forgot-otp-input"
+                maxlength="1"
+            >
+
+            <input
+                type="text"
+                class="forgot-otp-input"
+                maxlength="1"
+            >
+
+            <input
+                type="text"
+                class="forgot-otp-input"
+                maxlength="1"
+            >
+
+        </div>
+
+        <!-- TIMER -->
+        <p
+            id="forgotTimer"
+
+            style="
+                text-align:center;
+                margin-top:15px;
+                color:#64748b;
+                font-size:14px;
+            "
+            data-lang="resend_timer"
+        >
+            Resend code in 60s
+        </p>
+
+        <!-- RESEND -->
+        <button
+
+            id="forgotResendBtn"
+
+            type="button"
+
+            onclick="resendForgotCode()"
+
+            disabled
+
+            style="
+                width:100%;
+                margin-top:15px;
+                padding:14px;
+                border:none;
+                border-radius:14px;
+                background:#cbd5e1;
+                color:#fff;
+                cursor:not-allowed;
+                font-weight:600;
+            "
+            data-lang="resend_code"
+        >
+            Resend Code
+        </button>
+
+        <!-- VERIFY BTN -->
+        <button
+
+            id="verifyOtpBtn"
+
+            type="button"
+
+            onclick="verifyForgotOTP()"
+
+            style="
+                width:100%;
+                padding:14px;
+                margin-top:15px;
+                border:none;
+                border-radius:14px;
+                background:linear-gradient(90deg,#1e3a8a,#0ea5e9);
+                color:#fff;
+                font-weight:600;
+                cursor:pointer;
+            "
+            data-lang="verify_otp"
+        >
+            Verify OTP
+        </button>
+
+        <!-- MSG -->
+        <p
+            id="otpMsg"
+
+            style="
+                margin-top:18px;
+                text-align:center;
+                color:red;
+            "
+        ></p>
+
+    </div>
+
+</div>
+
+<!-- ===================================================== -->
+<!-- 🔥 STEP 3 : NEW PASSWORD POPUP -->
+<!-- ===================================================== -->
+
+<div
+    id="newPasswordPopup"
+
+    style="
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.6);
+        display:none;
+        justify-content:center;
+        align-items:center;
+        z-index:999999;
+        padding:20px;
+    "
+>
+
+    <div
+        style="
+            width:100%;
+            max-width:480px;
+            background:#fff;
+            border-radius:28px;
+            padding:40px;
+            position:relative;
+            box-shadow:0 20px 60px rgba(0,0,0,.2);
+        "
+    >
+
+        <!-- CLOSE -->
+        <button
+
+            onclick="closeNewPasswordPopup()"
+
+            style="
+                position:absolute;
+                top:18px;
+                right:18px;
+                width:42px;
+                height:42px;
+                border:none;
+                border-radius:50%;
+                background:#ef4444;
+                color:#fff;
+                font-size:20px;
+                cursor:pointer;
+            "
+        >
+            ✕
+        </button>
+
+        <!-- ICON -->
+        <div
+            style="
+                width:90px;
+                height:90px;
+                margin:auto;
+                border-radius:50%;
+                background:linear-gradient(135deg,#1e3a8a,#0ea5e9);
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                color:#fff;
+                font-size:40px;
+                margin-bottom:25px;
+            "
+        >
+            🔒
+        </div>
+
+        <h2
+            style="
+                text-align:center;
+                color:#1e3a8a;
+                margin-bottom:10px;
+            "
+            data-lang="new_password_title"
+        >
+            Create New Password
+        </h2>
+
+        <p
+            style="
+                text-align:center;
+                color:#64748b;
+                margin-bottom:25px;
+            "
+            data-lang="new_password_sub"
+        >
+            Enter your new password
+        </p>
+
+        <!-- PASSWORD -->
+        <input
+
+            data-lang="new_password_placeholder"
+
+            type="password"
+
+            id="newPassword"
+
+            placeholder="Enter new password"
+
+            style="
+                width:100%;
+                height:58px;
+                border-radius:16px;
+                border:2px solid #dbeafe;
+                padding:0 18px;
+                font-size:15px;
+                margin-bottom:18px;
+                outline:none;
+            "
+        >
+
+        <!-- CONFIRM -->
+        <input
+
+            data-lang="confirm_password_placeholder"
+
+            type="password"
+
+            id="confirmNewPassword"
+
+            placeholder="Confirm new password"
+
+            style="
+                width:100%;
+                height:58px;
+                border-radius:16px;
+                border:2px solid #dbeafe;
+                padding:0 18px;
+                font-size:15px;
+                margin-bottom:22px;
+                outline:none;
+            "
+        >
+
+        <!-- BTN -->
+        <button
+
+            id="resetBtn"
+
+            type="button"
+
+            onclick="resetPassword()"
+
+            style="
+                width:100%;
+                padding:16px;
+                border:none;
+                border-radius:16px;
+                background:linear-gradient(90deg,#1e3a8a,#0ea5e9);
+                color:#fff;
+                font-size:16px;
+                font-weight:600;
+                cursor:pointer;
+            "
+            data-lang="update_password"
+        >
+            Update Password
+        </button>
+
+        <!-- MSG -->
+        <p
+            id="newPassMsg"
+
+            style="
+                margin-top:18px;
+                text-align:center;
+                color:red;
+            "
+        ></p>
+
+    </div>
+
+</div>
+
+<!-- VERIFY ACCOUNT POPUP -->
+<div id="verifyAccountPopup"
+style="
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.6);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:999999;
+">
+
+<div style="
+width:100%;
+max-width:480px;
+background:#fff;
+border-radius:25px;
+padding:35px;
+text-align:center;
+position:relative;
+">
+
+<!-- CLOSE BUTTON -->
+<button
+onclick="closeVerifyPopup()"
+style="
+position:absolute;
+top:15px;
+right:15px;
+width:40px;
+height:40px;
+border:none;
+border-radius:50%;
+background:#ef4444;
+color:#fff;
+font-size:20px;
+cursor:pointer;
+">
+✕
+</button>
+
+<h2 style="color:#1e3a8a;">
+Verify Your Account
+</h2>
+
+<p style="margin:15px 0;color:#666;">
+Enter the verification code sent to your email
+</p>
+
+<div class="forgot-otp-wrapper">
+
+<input type="text" class="verify-account-otp" maxlength="1">
+<input type="text" class="verify-account-otp" maxlength="1">
+<input type="text" class="verify-account-otp" maxlength="1">
+<input type="text" class="verify-account-otp" maxlength="1">
+
+</div>
+
+<p id="verifyAccountMsg"
+style="
+margin-top:15px;
+color:red;
+">
+</p>
+
+<button
+onclick="verifyPendingAccount()"
+style="
+width:100%;
+margin-top:20px;
+padding:14px;
+border:none;
+border-radius:12px;
+background:linear-gradient(90deg,#1e3a8a,#0ea5e9);
+color:#fff;
+cursor:pointer;
+">
+Verify Account
+</button>
+
+</div>
+</div>
+<script>
+const translations = {
+
+    en: {
+
+        // 🔹 NAVBAR
+        admin_login: "Admin Login",
+        doctor_login: "Doctor Login",
+
+        // 🔹 LOGIN PAGE
+        login_title: "Welcome Back",
+        login_sub: "Login to access your dashboard",
+
+        email: "Email / Phone",
+        password: "Password",
+
+        remember: "Remember Me",
+        forgot: "Forgot Password?",
+
+        login_btn: "Login",
+
+        // 🔹 SIGN UP
+        no_account: "Don't have an account?",
+        signup: "Create New Account",
+
+        // 🔹 PLACEHOLDERS
+        email_placeholder: "Enter email or phone",
+        password_placeholder: "Enter your password",
+        
+        forgot_title: "Forgot Password",
+        forgot_sub: "Enter your email to receive OTP",
+
+        send_otp: "Send OTP",
+
+        verify_title: "Verify OTP",
+        verify_sub: "Enter the 4-digit code sent to your email",
+
+        resend_timer: "Resend code in 60s",
+        resend_code: "Resend Code",
+        verify_otp: "Verify OTP",
+
+        new_password_title: "Create New Password",
+        new_password_sub: "Enter your new password",
+
+        update_password: "Update Password",
+
+        forgot_email_placeholder: "Enter your email",
+
+        new_password_placeholder: "Enter new password",
+
+        confirm_password_placeholder: "Confirm new password",
+    },
+
+    ar: {
+
+        // 🔹 NAVBAR
+        admin_login: "دخول الأدمن",
+        doctor_login: "دخول الطبيب",
+
+        // 🔹 LOGIN PAGE
+        login_title: "مرحباً بعودتك",
+        login_sub: "سجل الدخول للوصول إلى حسابك",
+
+        email: "البريد أو الهاتف",
+        password: "كلمة المرور",
+
+        remember: "تذكرني",
+        forgot: "هل نسيت كلمة المرور؟",
+
+        login_btn: "تسجيل الدخول",
+
+        // 🔹 SIGN UP
+        no_account: "ليس لديك حساب؟",
+        signup: "إنشاء حساب جديد",
+
+        // 🔹 PLACEHOLDERS
+        email_placeholder: "ادخل البريد أو رقم الهاتف",
+        password_placeholder: "ادخل كلمة المرور",
+        
+        forgot_title: "نسيت كلمة المرور",
+        forgot_sub: "أدخل بريدك الإلكتروني لاستلام رمز التحقق",
+
+        send_otp: "إرسال الرمز",
+
+        verify_title: "تأكيد رمز التحقق",
+        verify_sub: "أدخل رمز التحقق المرسل إلى بريدك الإلكتروني",
+
+        resend_timer: "إعادة إرسال الرمز خلال 60 ثانية",
+        resend_code: "إعادة إرسال الرمز",
+        verify_otp: "تأكيد الرمز",
+
+        new_password_title: "إنشاء كلمة مرور جديدة",
+        new_password_sub: "أدخل كلمة المرور الجديدة",
+
+        update_password: "تحديث كلمة المرور",
+
+        forgot_email_placeholder: "أدخل بريدك الإلكتروني",
+
+        new_password_placeholder: "أدخل كلمة المرور الجديدة",
+
+        confirm_password_placeholder: "تأكيد كلمة المرور",
+    }
+};
+
+let currentLang = localStorage.getItem("lang") || "en";
+
+function applyLang(lang){
+
+    document.querySelectorAll("[data-lang]").forEach(el=>{
+        const key = el.getAttribute("data-lang");
+        if(translations[lang][key]){
+            el.innerText = translations[lang][key];
+        }
+    });
+
+    // placeholder
+    document.getElementById("emailInput").placeholder =
+    (lang === "ar") ? "ادخل البريد أو رقم الهاتف" : "Enter email or phone";
+
+    
+
+    document.getElementById("passInput").placeholder =
+        (lang === "ar") ? "ادخل كلمة المرور" : "Enter your password";
+
+    document.body.dir = (lang === "ar") ? "rtl" : "ltr";
+
+    localStorage.setItem("lang", lang);
+
+    document.getElementById("resetEmail").placeholder =
+    (lang === "ar")
+    ?
+    "ادخل بريدك الإلكتروني"
+    :
+    "Enter your email";
+
+document.getElementById("newPassword").placeholder =
+    (lang === "ar")
+    ?
+    "ادخل كلمة المرور الجديدة"
+    :
+    "Enter new password";
+
+document.getElementById("confirmNewPassword").placeholder =
+    (lang === "ar")
+    ?
+    "تأكيد كلمة المرور الجديدة"
+    :
+    "Confirm new password";
+}
+
+applyLang(currentLang);
+
+// زرار اللغة
+document.getElementById("langBtn").onclick = function(){
+
+    currentLang = (currentLang === "en") ? "ar" : "en";
+
+    applyLang(currentLang);
+
+    this.innerText = (currentLang === "en") ? "AR" : "EN";
+};
+
+// زرار تحويل لصحفه الادمن 
+document.getElementById("adminBtn").onclick = function(){
+    window.location.href = "./loginADMIN/login.html";
+};
+// زرار تحويل لصحفه الدكتور 
+document.getElementById("doctorBtn").onclick = function(){
+    window.location.href = "./doctor_page/login_doctor.html";
+};
+
+// 🔥 منع الدخول لو مسجل بالفعل
+window.onload = function(){
+
+    const authUser = localStorage.getItem("authUser");
+
+    if(authUser){
+        window.location.href = "patient_page/user_dashboard.html";
+    }
+
+};
+
+
+/* LOGIN */
+function login(e){
+    e.preventDefault();
+
+    const loginValue = document.getElementById("emailInput").value.trim();
+    const password = document.getElementById("passInput").value.trim();
+
+    if(!loginValue || !password){
+        alert("Enter email or phone & password");
+        return;
+    }
+
+    fetch("patient_page/patient_login.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            login: loginValue,
+            password: password
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        
+        if(data.status === "pending_verification"){
+
+    localStorage.setItem(
+        "verify_email",
+        data.email
+    );
+
+    fetch(
+        "patient_page/resend_otp.php",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                email:data.email
+            })
+        }
+    );
+
+    document.getElementById(
+        "verifyAccountPopup"
+    ).style.display = "flex";
+
+    return;
+}
+
+        if(data.status === "success"){
+
+            // 🔥 تخزين المستخدم (اسم موحد)
+            localStorage.setItem("authUser", JSON.stringify(data.user));
+
+            // 🔥 منع الرجوع
+            window.location.replace("patient_page/user_dashboard.html");
+
+        }else{
+            alert(data.message);
+        }
+
+    })
+    .catch(()=>{
+        alert("Server Error");
+    });
+}
+
+
+
+// =========================
+// 🔥 FLAGS
+// =========================
+let isResetting = false;
+let forgotTimer = 60;
+let forgotInterval = null;
+
+// =========================
+// 🔥 OTP INPUTS
+// =========================
+const forgotOTPInputs =
+    document.querySelectorAll(
+        ".forgot-otp-input"
+    );
+
+// =========================
+// 🔥 OPEN FORGOT POPUP
+// =========================
+function openForgotPopup(){
+
+    const popup =
+        document.getElementById(
+            "forgotPopup"
+        );
+
+    if(popup){
+
+        popup.style.display =
+            "flex";
+    }
+}
+
+// =========================
+// 🔥 CLOSE FORGOT POPUP
+// =========================
+function closeForgotPopup(){
+
+    const popup =
+        document.getElementById(
+            "forgotPopup"
+        );
+
+    if(popup){
+
+        popup.style.display =
+            "none";
+    }
+}
+
+// =========================
+// 🔥 CLOSE OTP POPUP
+// =========================
+function closeOtpPopup(){
+
+    const popup =
+        document.getElementById(
+            "otpPopup"
+        );
+
+    if(popup){
+
+        popup.style.display =
+            "none";
+    }
+}
+
+// =========================
+// 🔥 CLOSE NEW PASSWORD POPUP
+// =========================
+function closeNewPasswordPopup(){
+
+    const popup =
+        document.getElementById(
+            "newPasswordPopup"
+        );
+
+    if(popup){
+
+        popup.style.display =
+            "none";
+    }
+}
+
+// =========================
+// 🔥 SEND RESET CODE
+// =========================
+function sendResetCode(){
+
+    const emailInput =
+        document.getElementById(
+            "resetEmail"
+        );
+
+    const forgotMsg =
+        document.getElementById(
+            "forgotMsg"
+        );
+
+    const sendBtn =
+        document.getElementById(
+            "sendCodeBtn"
+        );
+
+    if(
+        !emailInput
+        ||
+        !forgotMsg
+        ||
+        !sendBtn
+    ){
+        return;
+    }
+
+    const email =
+        emailInput.value.trim();
+
+    // VALIDATION
+    if(!email){
+
+        forgotMsg.style.color =
+            "red";
+
+        forgotMsg.innerText =
+            "Enter your email";
+
+        return;
+    }
+
+    // BUTTON LOADING
+    sendBtn.innerText =
+        "Sending...";
+
+    sendBtn.disabled = true;
+
+    fetch(
+        "patient_page/send_reset_code.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+                email
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.status === "success"){
+
+            forgotMsg.style.color =
+                "green";
+
+            forgotMsg.innerHTML =
+                "✅ OTP sent successfully";
+
+            // SAVE EMAIL
+            localStorage.setItem(
+                "reset_email",
+                email
+            );
+
+            // OPEN OTP POPUP
+            setTimeout(()=>{
+
+                closeForgotPopup();
+
+                const otpPopup =
+                    document.getElementById(
+                        "otpPopup"
+                    );
+
+                if(otpPopup){
+
+                    otpPopup.style.display =
+                        "flex";
+                }
+
+                startForgotTimer();
+
+                if(
+                    forgotOTPInputs.length > 0
+                ){
+
+                    forgotOTPInputs[0]
+                    .focus();
+                }
+
+            },700);
+
+        }else{
+
+            forgotMsg.style.color =
+                "red";
+
+            forgotMsg.innerText =
+                data.message ||
+                "Failed to send OTP";
+        }
+
+        sendBtn.innerText =
+            "Send OTP";
+
+        sendBtn.disabled = false;
+    })
+
+    .catch(()=>{
+
+        forgotMsg.style.color =
+            "red";
+
+        forgotMsg.innerText =
+            "Server Error";
+
+        sendBtn.innerText =
+            "Send OTP";
+
+        sendBtn.disabled = false;
+    });
+}
+
+// =========================
+// 🔥 VERIFY OTP ONLY
+// =========================
+function verifyForgotOTP(){
+
+    if(isResetting){
+        return;
+    }
+
+    isResetting = true;
+
+    const verifyBtn =
+        document.getElementById(
+            "verifyOtpBtn"
+        );
+
+    const otpMsg =
+        document.getElementById(
+            "otpMsg"
+        );
+
+    if(
+        !verifyBtn
+        ||
+        !otpMsg
+    ){
+
+        isResetting = false;
+        return;
+    }
+
+    verifyBtn.innerText =
+        "Verifying...";
+
+    verifyBtn.disabled = true;
+
+    const email =
+        localStorage.getItem(
+            "reset_email"
+        );
+
+    const code =
+        getForgotOTP();
+
+    // VALIDATION
+    if(
+        !email
+        ||
+        code.length !== 4
+    ){
+
+        otpMsg.style.color =
+            "red";
+
+        otpMsg.innerText =
+            "Enter valid OTP";
+
+        verifyBtn.innerText =
+            "Verify OTP";
+
+        verifyBtn.disabled =
+            false;
+
+        isResetting = false;
+
+        return;
+    }
+
+    fetch(
+        "patient_page/verify_otp_only.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+
+                email,
+                code
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.status === "success"){
+
+            otpMsg.style.color =
+                "green";
+
+            otpMsg.innerHTML =
+                "✅ OTP verified successfully";
+
+            // CLEAR OTP
+            forgotOTPInputs.forEach(input=>{
+
+                input.value = "";
+            });
+
+            setTimeout(()=>{
+
+                closeOtpPopup();
+
+                const newPassPopup =
+                    document.getElementById(
+                        "newPasswordPopup"
+                    );
+
+                if(newPassPopup){
+
+                    newPassPopup.style.display =
+                        "flex";
+                }
+
+                isResetting = false;
+
+            },800);
+
+        }else{
+
+            otpMsg.style.color =
+                "red";
+
+            otpMsg.innerText =
+                data.message ||
+                "Invalid OTP";
+
+            const wrapper =
+                document.querySelector(
+                    ".forgot-otp-wrapper"
+                );
+
+            if(wrapper){
+
+                wrapper.classList.add(
+                    "shake"
+                );
+
+                setTimeout(()=>{
+
+                    wrapper.classList.remove(
+                        "shake"
+                    );
+
+                },300);
+            }
+
+            verifyBtn.innerText =
+                "Verify OTP";
+
+            verifyBtn.disabled =
+                false;
+
+            isResetting = false;
+        }
+
+    })
+
+    .catch(()=>{
+
+        otpMsg.style.color =
+            "red";
+
+        otpMsg.innerText =
+            "Server Error";
+
+        verifyBtn.innerText =
+            "Verify OTP";
+
+        verifyBtn.disabled =
+            false;
+
+        isResetting = false;
+    });
+}
+
+// =========================
+// 🔥 UPDATE PASSWORD
+// =========================
+function resetPassword(){
+
+    const email =
+        localStorage.getItem(
+            "reset_email"
+        );
+
+    const newPasswordInput =
+        document.getElementById(
+            "newPassword"
+        );
+
+    const confirmPasswordInput =
+        document.getElementById(
+            "confirmNewPassword"
+        );
+
+    const resetBtn =
+        document.getElementById(
+            "resetBtn"
+        );
+
+    const msg =
+        document.getElementById(
+            "newPassMsg"
+        );
+
+    if(
+        !newPasswordInput
+        ||
+        !confirmPasswordInput
+        ||
+        !resetBtn
+        ||
+        !msg
+    ){
+        return;
+    }
+
+    const newPassword =
+        newPasswordInput.value.trim();
+
+    const confirmPassword =
+        confirmPasswordInput.value.trim();
+
+    // VALIDATION
+    if(
+        !newPassword
+        ||
+        !confirmPassword
+    ){
+
+        msg.style.color =
+            "red";
+
+        msg.innerText =
+            "Fill all fields";
+
+        return;
+    }
+
+    if(newPassword !== confirmPassword){
+
+        msg.style.color =
+            "red";
+
+        msg.innerText =
+            "Passwords do not match";
+
+        return;
+    }
+
+    resetBtn.innerText =
+        "Updating...";
+
+    resetBtn.disabled = true;
+
+    fetch(
+        "patient_page/update_password.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+
+                email,
+                new_password:newPassword
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.status === "success"){
+
+            msg.style.color =
+                "green";
+
+            msg.innerHTML =
+                "✅ Password updated successfully";
+
+            localStorage.removeItem(
+                "reset_email"
+            );
+
+            setTimeout(()=>{
+
+                closeNewPasswordPopup();
+
+                window.location.reload();
+
+            },1500);
+
+        }else{
+
+            msg.style.color =
+                "red";
+
+            msg.innerText =
+                data.message ||
+                "Password update failed";
+        }
+
+        resetBtn.innerText =
+            "Update Password";
+
+        resetBtn.disabled =
+            false;
+    })
+
+    .catch(()=>{
+
+        msg.style.color =
+            "red";
+
+        msg.innerText =
+            "Server Error";
+
+        resetBtn.innerText =
+            "Update Password";
+
+        resetBtn.disabled =
+            false;
+    });
+}
+
+// =========================
+// 🔥 OTP EVENTS
+// =========================
+forgotOTPInputs.forEach((input,index)=>{
+
+    // INPUT
+    input.addEventListener(
+        "input",
+        function(){
+
+            this.value =
+                this.value.replace(
+                    /[^0-9]/g,
+                    ""
+                );
+
+            // NEXT
+            if(
+                this.value
+                &&
+                index <
+                forgotOTPInputs.length - 1
+            ){
+
+                forgotOTPInputs[
+                    index + 1
+                ].focus();
+            }
+
+            // AUTO VERIFY
+            const code =
+                getForgotOTP();
+
+            if(
+                code.length === 4
+                &&
+                !isResetting
+            ){
+
+                setTimeout(()=>{
+
+                    verifyForgotOTP();
+
+                },300);
+            }
+        }
+    );
+
+    // BACKSPACE
+    input.addEventListener(
+        "keydown",
+        function(e){
+
+            if(
+                e.key === "Backspace"
+                &&
+                !this.value
+                &&
+                index > 0
+            ){
+
+                forgotOTPInputs[
+                    index - 1
+                ].focus();
+            }
+        }
+    );
+});
+
+// =========================
+// 🔥 GET OTP
+// =========================
+function getForgotOTP(){
+
+    let code = "";
+
+    forgotOTPInputs.forEach(input=>{
+
+        code += input.value;
+    });
+
+    return code;
+}
+
+// =========================
+// 🔥 START TIMER
+// =========================
+function startForgotTimer(){
+
+    forgotTimer = 60;
+
+    const timerText =
+        document.getElementById(
+            "forgotTimer"
+        );
+
+    const resendBtn =
+        document.getElementById(
+            "forgotResendBtn"
+        );
+
+    if(
+        !timerText
+        ||
+        !resendBtn
+    ){
+        return;
+    }
+
+    resendBtn.disabled = true;
+
+    resendBtn.style.background =
+        "#cbd5e1";
+
+    resendBtn.style.cursor =
+        "not-allowed";
+
+    clearInterval(
+        forgotInterval
+    );
+
+    forgotInterval =
+        setInterval(()=>{
+
+            forgotTimer--;
+
+            timerText.innerText =
+                `Resend code in ${forgotTimer}s`;
+
+            if(forgotTimer <= 0){
+
+                clearInterval(
+                    forgotInterval
+                );
+
+                resendBtn.disabled =
+                    false;
+
+                resendBtn.style.background =
+                    "linear-gradient(90deg,#1e3a8a,#0ea5e9)";
+
+                resendBtn.style.cursor =
+                    "pointer";
+
+                timerText.innerText =
+                    "You can resend code now";
+            }
+
+        },1000);
+}
+
+// =========================
+// 🔥 RESEND CODE
+// =========================
+function resendForgotCode(){
+
+    const email =
+        localStorage.getItem(
+            "reset_email"
+        );
+
+    if(!email){
+        return;
+    }
+
+    fetch(
+        "patient_page/send_reset_code.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+                email
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.status === "success"){
+
+            startForgotTimer();
+
+            const otpMsg =
+                document.getElementById(
+                    "otpMsg"
+                );
+
+            if(otpMsg){
+
+                otpMsg.style.color =
+                    "green";
+
+                otpMsg.innerHTML =
+                    "✅ New OTP sent successfully";
+            }
+
+            // CLEAR OTP INPUTS
+            forgotOTPInputs.forEach(input=>{
+
+                input.value = "";
+            });
+
+            if(
+                forgotOTPInputs.length > 0
+            ){
+
+                forgotOTPInputs[0]
+                .focus();
+            }
+        }
+
+    })
+
+    .catch(()=>{
+
+        const otpMsg =
+            document.getElementById(
+                "otpMsg"
+            );
+
+        if(otpMsg){
+
+            otpMsg.style.color =
+                "red";
+
+            otpMsg.innerText =
+                "Server Error";
+        }
+    });
+}
+
+const verifyInputs =
+document.querySelectorAll(
+".verify-account-otp"
+);
+
+verifyInputs.forEach((input,index)=>{
+
+    input.addEventListener(
+        "input",
+        function(){
+
+            this.value =
+            this.value.replace(
+                /[^0-9]/g,
+                ""
+            );
+
+            if(
+                this.value &&
+                index < verifyInputs.length-1
+            ){
+
+                verifyInputs[
+                    index+1
+                ].focus();
+            }
+
+            // 🔥 AUTO VERIFY
+            let code = "";
+
+            verifyInputs.forEach(i=>{
+
+                code += i.value;
+            });
+
+            if(code.length === 4){
+
+                setTimeout(()=>{
+
+                    verifyPendingAccount();
+
+                },300);
+            }
+        }
+    );
+
+    input.addEventListener(
+        "keydown",
+        function(e){
+
+            if(
+                e.key === "Backspace"
+                &&
+                !this.value
+                &&
+                index > 0
+            ){
+
+                verifyInputs[
+                    index-1
+                ].focus();
+            }
+        }
+    );
+
+});
+
+
+let isVerifyingAccount = false;
+
+function verifyPendingAccount(){
+
+    if(isVerifyingAccount){
+        return;
+    }
+
+    isVerifyingAccount = true;
+
+    let code = "";
+
+    verifyInputs.forEach(input=>{
+
+        code += input.value;
+    });
+
+    const email =
+    localStorage.getItem(
+        "verify_email"
+    );
+
+    fetch(
+        "patient_page/verify_email.php",
+        {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+
+                email,
+                code
+            })
+        }
+    )
+
+    .then(res=>res.json())
+
+    .then(data=>{
+
+        if(data.status==="success"){
+
+            document.getElementById(
+                "verifyAccountMsg"
+            ).style.color =
+            "green";
+
+            document.getElementById(
+                "verifyAccountMsg"
+            ).innerHTML =
+            "✅ Account Verified";
+
+            isVerifyingAccount = false;
+
+            setTimeout(()=>{
+
+                document.getElementById(
+                    "verifyAccountPopup"
+                ).style.display =
+                "none";
+
+                location.reload();
+
+            },1500);
+
+        }else{
+            isVerifyingAccount = false;
+
+            document.getElementById(
+                "verifyAccountMsg"
+            ).innerText =
+            data.message;
+        }
+
+    })
+
+    .catch(()=>{
+        isVerifyingAccount = false; 
+
+        document.getElementById(
+            "verifyAccountMsg"
+        ).innerText =
+        "Server Error";
+    });
+
+}
+
+function closeVerifyPopup(){
+
+    document.getElementById(
+        "verifyAccountPopup"
+    ).style.display = "none";
+
+    document.getElementById(
+        "verifyAccountMsg"
+    ).innerText = "";
+
+    verifyInputs.forEach(input=>{
+
+        input.value = "";
+    });
+}
+</script>
+</body>
+</html>
